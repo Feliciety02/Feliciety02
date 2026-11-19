@@ -1,20 +1,20 @@
 <div align="center">
 
-<img src="assets/farm.svg" width="100%" alt="Fe Anne's pixel farm: every day of my GitHub contributions is a soil tile, busier days grow bigger crops, and a little farmer waters the field while the sky turns from day to night." />
+<table><tr><td>
+<picture><img src="assets/farm.svg" width="1792" alt="Fe Anne's pixel farm: every day of my GitHub contributions is a tilled plot, busier days grow bigger crops, and a little farmer waters the field while the sky turns from day to night." /></picture>
+</td></tr></table>
 
-<img src="assets/dialogue.svg" width="100%" alt="Hi there! I'm Fe Anne, a BS Computer Science student at the University of Mindanao. UI/UX designer and full-stack web developer building AI tools, web apps and Chrome extensions." />
+<sub>⟵ scroll sideways to walk the whole farm ⟶</sub>
+
+<picture><img src="assets/dialogue.svg" width="100%" alt="Hi there! I'm Fe Anne, a BS Computer Science student at the University of Mindanao. UI/UX designer and full-stack web developer building AI tools, web apps and Chrome extensions." /></picture>
 
 </div>
 
-<details>
-<summary><b>🎒 Open my inventory</b> &nbsp;·&nbsp; languages & tools I build with</summary>
-<br/>
-<img src="assets/backpack.svg" width="100%" alt="Tech stack: TypeScript, JavaScript, Python, PHP, HTML5, Vue, Java, Dart, Figma" />
-</details>
+### 🎒 Inventory
 
-<details open>
-<summary><b>📜 Quest log</b> &nbsp;·&nbsp; things I've grown on this farm</summary>
-<br/>
+<picture><img src="assets/backpack.svg" width="100%" alt="Tech stack: TypeScript, JavaScript, Python, PHP, HTML5, Vue, Java, Dart, Figma" /></picture>
+
+### 📜 Quest log
 
 | | Quest | Reward |
 |:-:|---|---|
@@ -26,21 +26,15 @@
 | 🧮 | [**UM GWA Calculator**](https://github.com/Feliciety02/UM-GWA-Calculator-Extension) | Chrome extension that computes your UM GWA automatically |
 | 🌾 | [**Rice Yield Simulator**](https://github.com/Feliciety02/Rice-Yield-Simulator) | A real farm sim, in Python |
 
-</details>
-
-<details>
-<summary><b>📬 Mailbox</b> &nbsp;·&nbsp; send me a letter</summary>
-<br/>
+### 📬 Mailbox
 
 [![LinkedIn](https://img.shields.io/badge/LinkedIn-Fe_Anne_Malasarte-4a78c2?style=for-the-badge&logo=linkedin&logoColor=white&labelColor=5b3a1f)](https://www.linkedin.com/in/fe-anne-malasarte-2a492a322/)
 [![Instagram](https://img.shields.io/badge/Instagram-feli__ciety-d1495b?style=for-the-badge&logo=instagram&logoColor=white&labelColor=5b3a1f)](https://www.instagram.com/feli_ciety/)
 [![Facebook](https://img.shields.io/badge/Facebook-feanneLM-3f9a32?style=for-the-badge&logo=facebook&logoColor=white&labelColor=5b3a1f)](https://www.facebook.com/feanneLM)
 
-</details>
-
 <div align="center">
 <br/>
-<img src="https://komarev.com/ghpvc/?username=Feliciety02&label=Farm%20visitors&color=c48a4f&style=flat-square" alt="Farm visitors" />
+<picture><img src="https://komarev.com/ghpvc/?username=Feliciety02&label=Farm%20visitors&color=c48a4f&style=flat-square" alt="Farm visitors" /></picture>
 <br/>
 <sub>🌱 The farm regrows every day from my contribution graph · <a href="https://github.com/Feliciety02/Feliciety02/actions">see it tended</a></sub>
 </div>
