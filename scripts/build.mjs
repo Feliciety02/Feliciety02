@@ -18,7 +18,7 @@ const useSample = process.argv.includes('--sample') || !token;
 if (useSample && !process.argv.includes('--sample')) console.warn('No GITHUB_TOKEN set, using sample data.');
 
 const calendar = useSample ? sampleCalendar() : await fetchCalendar(login, token);
-writeFileSync(join(out, 'farm.svg'), renderFarm(calendar, { name: "Fe Anne's Farm" }));
+writeFileSync(join(out, 'farm.svg'), renderFarm(calendar, { name: "Fe Anne's Farm", scale: 2, season: process.env.FARM_SEASON }));
 
 const portrait = existsSync(join(out, 'portrait.png')) ? readFileSync(join(out, 'portrait.png')).toString('base64') : null;
 writeFileSync(join(out, 'dialogue.svg'), renderDialogue([

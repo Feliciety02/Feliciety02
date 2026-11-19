@@ -242,7 +242,7 @@ function grassPattern(id, s) {
 }
 
 // ------------------------------------------------------------------ render
-export function renderFarm({ total, weeks }, { name = "Fe Anne's Farm" } = {}) {
+export function renderFarm({ total, weeks }, { name = "Fe Anne's Farm", scale = 1, season: forced } = {}) {
   const cols = weeks.length;
   const X0 = 24, Y0 = 158;
   const W = X0 * 2 + cols * P;
@@ -251,7 +251,9 @@ export function renderFarm({ total, weeks }, { name = "Fe Anne's Farm" } = {}) {
   const H = fieldB + 62;
   const KT = '0;0.5;0.6;0.68;0.75;0.9;0.96;1';
 
-  const colSeason = weeks.map((w) => seasonOf(w[Math.floor(w.length / 2)].date));
+  // one season for the whole farm: the season of the latest day (or a forced one)
+  const farmSeason = forced || seasonOf(weeks.flat().at(-1).date);
+  const colSeason = weeks.map(() => farmSeason);
 
   // farmer route: down/up each week column, then home along the lane
   const pts = [];
@@ -332,7 +334,7 @@ export function renderFarm({ total, weeks }, { name = "Fe Anne's Farm" } = {}) {
   const rpi = rng(3);
   let forest = '';
   for (let x = -6; x < W; x += 7 + Math.floor(rpi() * 5)) forest += `<use href="#pine" x="${x}" y="${hy - 16 - Math.floor(rpi() * 7)}"/>`;
-  const meadow = `<rect x="0" y="${hy - 4}" width="${W}" height="${Y0 - hy + 4}" fill="url(#gr-summer)"/>`;
+  const meadow = `<rect x="0" y="${hy - 4}" width="${W}" height="${Y0 - hy + 4}" fill="url(#gr-${farmSeason})"/>`;
 
   const cotX = W - 250, cotY = hy - 34;
   const glow = [8, 33].map((wx) => `<rect x="${cotX + wx + 1}" y="${cotY + 26}" width="6" height="6" fill="#ffd36b"/>`).join('');
@@ -466,7 +468,7 @@ export function renderFarm({ total, weeks }, { name = "Fe Anne's Farm" } = {}) {
   </style>`;
 
   const night = (vals) => `<animate attributeName="opacity" dur="${T}s" repeatCount="indefinite" keyTimes="${KT}" values="${vals}"/>`;
-  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${W} ${H}" width="${W}" height="${H}" shape-rendering="crispEdges" role="img" aria-labelledby="t d">
+  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${W} ${H}" width="${W * scale}" height="${H * scale}" shape-rendering="crispEdges" role="img" aria-labelledby="t d">
 <title id="t">${name.replace(/'/g, '&#39;')}</title>
 <desc id="d">A pixel-art farm grown from ${total} GitHub contributions in the last year. Each day is a tilled plot; busier days grow bigger crops, the year runs through four seasons, and a little farmer waters the field from morning to night.</desc>
 ${defs}${style}
