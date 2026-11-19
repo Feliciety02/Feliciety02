@@ -242,35 +242,38 @@ function grassPattern(id, s) {
 }
 
 // ------------------------------------------------------------------ render
-export function renderFarm({ total, weeks }, { name = "Fe Anne's Farm", scale = 1, season: forced } = {}) {
-  const cols = weeks.length;
-  const X0 = 24, Y0 = 158;
-  const W = X0 * 2 + cols * P;
-  const fieldB = Y0 + 7 * P;
+export function renderFarm({ total, weeks: allWeeks }, { name = "Fe Anne's Farm", width = 896, fieldScale = 2, season: forced } = {}) {
+  // Fixed canvas width; the field shows as many recent weeks as fit at fieldScale.
+  const FS = fieldScale;
+  const W = width, X0 = 24, Y0 = 158;
+  const cols = Math.min(allWeeks.length, Math.floor((W - X0 * 2) / (P * FS)));
+  const weeks = allWeeks.slice(-cols);
+  const FX = Math.round((W - cols * P * FS) / 2); // field left edge (global)
+  const fieldB = Y0 + 7 * P * FS;
   const laneY = fieldB + 16;
   const H = fieldB + 62;
   const KT = '0;0.5;0.6;0.68;0.75;0.9;0.96;1';
 
   // one season for the whole farm: the season of the latest day (or a forced one)
-  const farmSeason = forced || seasonOf(weeks.flat().at(-1).date);
+  const farmSeason = forced || seasonOf(allWeeks.flat().at(-1).date);
   const colSeason = weeks.map(() => farmSeason);
 
-  // farmer route: down/up each week column, then home along the lane
+  // farmer route in field-local units (the field group is scaled by FS)
   const pts = [];
   for (let c = 0; c < cols; c++) for (let k = 0; k < 7; k++) {
     const r = c % 2 === 0 ? k : 6 - k;
-    pts.push([X0 + c * P + P / 2, Y0 + r * P + P / 2, c, r]);
+    pts.push([c * P + P / 2, r * P + P / 2, c, r]);
   }
   const last = pts[pts.length - 1];
-  const homeX = X0 - 12;
-  const route = [...pts.map(([x, y]) => [x, y]), [last[0], laneY], [homeX, laneY], [homeX, Y0 + P / 2], [pts[0][0], pts[0][1]]];
+  const laneL = (laneY - Y0) / FS, homeX = -6;
+  const route = [...pts.map(([x, y]) => [x, y]), [last[0], laneL], [homeX, laneL], [homeX, P / 2], [pts[0][0], pts[0][1]]];
   let len = 0;
   const at = [0];
   for (let i = 1; i < route.length; i++) {
     len += Math.abs(route[i][0] - route[i - 1][0]) + Math.abs(route[i][1] - route[i - 1][1]);
     at.push(len);
   }
-  const T = +(len / 150).toFixed(2);
+  const T = +((len * FS) / 120).toFixed(2);
   const pathD = 'M' + route.map(([x, y]) => `${x} ${y}`).join('L');
 
   // facing: front when walking down / home, back when walking up
@@ -305,27 +308,20 @@ export function renderFarm({ total, weeks }, { name = "Fe Anne's Farm", scale = 
   });
   crops.sort((a, b) => a[0] - b[0] || a[1] - b[1]);
 
-  // ground strips by season + falling particles
-  let ground = '', particles = '';
+  // ground + falling particles for the season
+  const ground = `<rect x="0" y="${Y0 - 10}" width="${W}" height="${H - Y0 + 10}" fill="url(#gr-${farmSeason})"/>`;
+  let particles = '';
   const rp = rng(21);
-  colSeason.forEach((s, c) => {
-    const x = c === 0 ? 0 : X0 + c * P;
-    const w = c === 0 ? X0 + P : c === cols - 1 ? W - x : P;
-    ground += `<rect x="${x}" y="${Y0 - 10}" width="${w}" height="${H - Y0 + 10}" fill="url(#gr-${s})"/>`;
-    if (s !== 'summer' && rp() < 0.55) {
-      const cls = { winter: 'snow', spring: 'petal', fall: 'leafp' }[s];
-      const px = X0 + c * P + Math.floor(rp() * P), dur = (6 + rp() * 5).toFixed(1), del = (-rp() * 10).toFixed(1);
-      particles += `<rect class="pt ${cls}" x="${px}" y="${Y0 - 30}" width="${s === 'fall' ? 3 : 2}" height="2" style="animation-duration:${dur}s;animation-delay:${del}s"/>`;
+  if (farmSeason !== 'summer') {
+    const cls = { winter: 'snow', spring: 'petal', fall: 'leafp' }[farmSeason];
+    for (let i = 0; i < 34; i++) {
+      const px = Math.floor(rp() * W), dur = (6 + rp() * 5).toFixed(1), del = (-rp() * 10).toFixed(1);
+      particles += `<rect class="pt ${cls}" x="${px}" y="${Y0 - 30}" width="${farmSeason === 'fall' ? 3 : 2}" height="2" style="animation-duration:${dur}s;animation-delay:${del}s"/>`;
     }
-  });
+  }
 
-  // season signposts on the top fence
-  let signs = '';
-  colSeason.forEach((s, c) => {
-    if (c > 0 && s === colSeason[c - 1]) return;
-    const x = X0 + c * P + 2;
-    signs += `<g transform="translate(${x} ${Y0 - 34})"><rect x="7" y="10" width="3" height="16" fill="#7a4a24"/><rect x="0" y="0" width="17" height="13" fill="#4a2a14"/><rect x="1" y="1" width="15" height="11" fill="#d9a565"/>${sprite(ICONS[SEASON[s].icon], CP, 1, 5, 3)}</g>`;
-  });
+  // season signpost on the top fence
+  const signs = `<g transform="translate(${FX + 2} ${Y0 - 34})"><rect x="7" y="10" width="3" height="16" fill="#7a4a24"/><rect x="0" y="0" width="17" height="13" fill="#4a2a14"/><rect x="1" y="1" width="15" height="11" fill="#d9a565"/>${sprite(ICONS[SEASON[farmSeason].icon], CP, 1, 5, 3)}</g>`;
 
   // backdrop
   const hy = Y0 - 22;
@@ -468,7 +464,7 @@ export function renderFarm({ total, weeks }, { name = "Fe Anne's Farm", scale = 
   </style>`;
 
   const night = (vals) => `<animate attributeName="opacity" dur="${T}s" repeatCount="indefinite" keyTimes="${KT}" values="${vals}"/>`;
-  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${W} ${H}" width="${W * scale}" height="${H * scale}" shape-rendering="crispEdges" role="img" aria-labelledby="t d">
+  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${W} ${H}" width="${W}" height="${H}" shape-rendering="crispEdges" role="img" aria-labelledby="t d">
 <title id="t">${name.replace(/'/g, '&#39;')}</title>
 <desc id="d">A pixel-art farm grown from ${total} GitHub contributions in the last year. Each day is a tilled plot; busier days grow bigger crops, the year runs through four seasons, and a little farmer waters the field from morning to night.</desc>
 ${defs}${style}
@@ -484,11 +480,13 @@ ${defs}${style}
   ${ground}
   <rect x="0" y="${Y0 - 30}" width="${W}" height="14" fill="url(#fence)"/>
   ${signs}
-  <g>${soil}</g><g>${wet}</g>
   <rect x="0" y="${laneY - 9}" width="${W}" height="18" fill="url(#dirt)"/><rect x="0" y="${laneY - 9}" width="${W}" height="1" fill="#b98f5a"/>
   ${flowers}${critters}
-  <g>${crops.map((c) => c[2]).join('')}</g>
-  ${farmer}
+  <g transform="translate(${FX} ${Y0}) scale(${FS})">
+    <g>${soil}</g><g>${wet}</g>
+    <g>${crops.map((c) => c[2]).join('')}</g>
+    ${farmer}
+  </g>
   ${particles}
   ${butterflies}
   <rect x="0" y="${H - 14}" width="${W}" height="14" fill="url(#fence)"/>
