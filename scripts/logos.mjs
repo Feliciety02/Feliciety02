@@ -90,6 +90,89 @@ const LOGOS = {
   },
 };
 
+// ----- more languages + social icons
+Object.assign(LOGOS, {
+  css: () => {
+    const [g] = LOGOS.html();
+    for (let y = 0; y < 16; y++) for (let x = 0; x < 16; x++) {
+      const v = g.get(x, y);
+      if (v === 'o') g.set(x, y, 'b'); else if (v === 'O') g.set(x, y, 'B');
+    }
+    for (let y = 3; y < 10; y++) for (let x = 5; x < 11; x++) if ('wW'.includes(g.get(x, y))) g.set(x, y, x < 8 ? 'b' : 'B');
+    glyph(g, '3', 6, 3, 'w');
+    return [g, { b: '#1572b6', B: '#33a9dc', w: '#ffffff' }];
+  },
+  jupyter: () => {
+    const g = new Grid(16, 16);
+    for (let x = 2; x < 14; x++) { const d = Math.round(Math.abs(x - 7.5) / 3); g.set(x, 4 + d, 'o').set(x, 11 - d, 'o'); g.set(x, 5 + d, 'O').set(x, 10 - d, 'O'); }
+    g.rect(1, 1, 2, 2, 'g').rect(13, 0, 2, 2, 'g').rect(2, 13, 2, 2, 'g');
+    return [g, { o: '#f37626', O: '#d65b0f', g: '#767677' }];
+  },
+  linkedin: () => {
+    const g = roundedSquare('b', 'B');
+    g.rect(3, 6, 2, 7, 'w').rect(3, 3, 2, 2, 'w');
+    g.rect(7, 6, 2, 7, 'w').rect(9, 6, 3, 2, 'w').rect(11, 7, 2, 6, 'w');
+    return [g, { b: '#0a66c2', B: '#074a8c', w: '#ffffff' }];
+  },
+  instagram: () => {
+    const g = new Grid(16, 16);
+    for (let y = 0; y < 16; y++) for (let x = 0; x < 16; x++) if (!((x < 1 || x > 14) && (y < 1 || y > 14))) g.set(x, y, x + y < 10 ? 'a' : x + y < 20 ? 'b' : 'c');
+    g.rect(3, 3, 10, 1, 'w').rect(3, 12, 10, 1, 'w').rect(3, 3, 1, 10, 'w').rect(12, 3, 1, 10, 'w');
+    for (let y = 5; y < 11; y++) for (let x = 5; x < 11; x++) { const d = Math.hypot(x - 7.5, y - 7.5); if (d > 1.6 && d < 2.9) g.set(x, y, 'w'); }
+    g.set(10, 5, 'w');
+    return [g, { a: '#feda75', b: '#d62976', c: '#7e3aaf', w: '#ffffff' }];
+  },
+  facebook: () => {
+    const g = new Grid(16, 16).disc(7.5, 7.5, 7.8, 'b');
+    g.rect(8, 4, 3, 2, 'w').rect(7, 5, 2, 11, 'w').rect(5, 8, 6, 2, 'w');
+    return [g, { b: '#1877f2', w: '#ffffff' }];
+  },
+  x: () => {
+    const g = roundedSquare('k', 'k');
+    for (let i = 0; i < 10; i++) { g.set(3 + i, 3 + i, 'w').set(4 + i, 3 + i, 'w'); g.set(12 - i, 3 + i, 'w'); }
+    return [g, { k: '#111111', w: '#ffffff' }];
+  },
+  youtube: () => {
+    const g = new Grid(16, 16).rect(1, 3, 14, 10, 'r').rect(0, 4, 16, 8, 'r');
+    for (let i = 0; i < 4; i++) g.rect(6, 5 + i, 1 + i, 1, 'w').rect(6, 10 - i, 1 + i, 1, 'w');
+    return [g, { r: '#ff0000', w: '#ffffff' }];
+  },
+  mail: () => {
+    const g = new Grid(16, 16).rect(1, 3, 14, 10, 'w').rect(1, 3, 14, 1, 'k').rect(1, 12, 14, 1, 'k').rect(1, 3, 1, 10, 'k').rect(14, 3, 1, 10, 'k');
+    for (let i = 0; i < 6; i++) g.set(2 + i, 4 + i, 'k').set(13 - i, 4 + i, 'k');
+    g.rect(10, 9, 3, 2, 'r');
+    return [g, { w: '#fff3d6', k: '#4a2a14', r: '#d94a5a' }];
+  },
+});
+
+const BY_LANGUAGE = {
+  typescript: 'ts', javascript: 'js', python: 'python', php: 'php', html: 'html', css: 'css', vue: 'vue',
+  java: 'java', dart: 'dart', 'jupyter notebook': 'jupyter', figma: 'figma',
+};
+const BY_PROVIDER = { LINKEDIN: 'linkedin', INSTAGRAM: 'instagram', FACEBOOK: 'facebook', TWITTER: 'x', YOUTUBE: 'youtube' };
+
+/** Any language: a known pixel logo, or a coloured tile with its initials. */
+function generic(label, color = '#8a8a8a') {
+  const g = roundedSquare('c', 'C');
+  const words = label.replace(/[^A-Za-z0-9+# ]/g, '').split(/\s+/).filter(Boolean);
+  const ab = (words.length > 1 ? words[0][0] + words[1][0] : (words[0] || '?').slice(0, 2)).toUpperCase();
+  const hex = color.replace('#', '');
+  const [r, gg, b] = [0, 2, 4].map((i) => parseInt(hex.slice(i, i + 2), 16) || 0);
+  const ink = r * 0.299 + gg * 0.587 + b * 0.114 > 150 ? 'k' : 'w';
+  glyph(g, ab[0], 2, 7, ink); if (ab[1]) glyph(g, ab[1], 8, 7, ink);
+  return [g, { c: color, C: '#00000033', w: '#ffffff', k: '#2b2b2b' }];
+}
+
+export function logoFor(label, color) {
+  const key = BY_LANGUAGE[String(label).toLowerCase()];
+  const [g, pal] = key ? LOGOS[key]() : generic(label, color);
+  return [g.rows(), pal];
+}
+export function socialIcon(provider) {
+  const [g, pal] = LOGOS[BY_PROVIDER[provider] || 'mail']();
+  return [g.rows(), pal];
+}
+
 export function logo(name) {
   const [g, pal] = LOGOS[name]();
   return [g.rows(), pal];

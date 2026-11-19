@@ -6,7 +6,7 @@ on:
   workflow_dispatch:
   push:
     branches: [main]
-    paths: ["scripts/**", ".github/workflows/farm.yml"]
+    paths: ["scripts/**", "profile.config.json", ".github/workflows/farm.yml"]
 
 permissions:
   contents: write
@@ -19,7 +19,7 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22
-      - name: Grow the crops
+      - name: Grow the crops and rewrite the README
         run: node scripts/build.mjs
         env:
           GH_LOGIN: ${{ github.repository_owner }}
@@ -29,6 +29,6 @@ jobs:
         run: |
           git config user.name "farm-bot"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add assets
+          git add assets README.md
           git diff --cached --quiet || git commit -m "chore: tend the farm 🌱"
           git push

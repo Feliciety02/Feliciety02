@@ -1,12 +1,21 @@
 #!/usr/bin/env node
-// Builds assets/farm.svg, assets/dialogue.svg and assets/backpack.svg.
+// Builds every image in assets/ AND the README itself from live GitHub data,
+// so the profile follows whatever changes on github.com/<login>:
+//   name -> farm sign + dialogue, bio -> dialogue text, languages -> inventory,
+//   pinned repos -> quest log, social links + website -> mailbox.
+//
 //   node scripts/build.mjs            -> live data (needs GITHUB_TOKEN)
-//   node scripts/build.mjs --sample   -> made-up data, for previewing offline
-import { mkdirSync, writeFileSync, readFileSync, existsSync } from 'node:fs';
+//   node scripts/build.mjs --sample   -> offline sample data, for previewing
+//
+// Things GitHub can't tell us live in profile.config.json (all optional).
+import { mkdirSync, writeFileSync, readFileSync, existsSync, rmSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { fetchCalendar, sampleCalendar, renderFarm } from './farm.mjs';
-import { renderDialogue, renderInventory } from './cards.mjs';
+import { fetchProfile, sampleProfile, languages } from './profile.mjs';
+import { renderDialogue, renderInventory, renderQuest, renderMail, renderBanner } from './cards.mjs';
+import { clean, wrap } from './pixel.mjs';
+import { socialIcon } from './logos.mjs';
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
 const out = join(root, 'assets');
@@ -17,29 +26,91 @@ const token = process.env.GH_TOKEN || process.env.GITHUB_TOKEN;
 const useSample = process.argv.includes('--sample') || !token;
 if (useSample && !process.argv.includes('--sample')) console.warn('No GITHUB_TOKEN set, using sample data.');
 
-const calendar = useSample ? sampleCalendar() : await fetchCalendar(login, token);
-writeFileSync(join(out, 'farm.svg'), renderFarm(calendar, { name: "Fe Anne's Farm", fieldScale: 2, season: process.env.FARM_SEASON }));
+const cfgPath = join(root, 'profile.config.json');
+const cfg = existsSync(cfgPath) ? JSON.parse(readFileSync(cfgPath, 'utf8')) : {};
 
+const [calendar, profile] = useSample
+  ? [sampleCalendar(), sampleProfile(login)]
+  : await Promise.all([fetchCalendar(login, token), fetchProfile(login, token)]);
+
+const name = clean(cfg.name || profile.name || login);
+const write = (file, svg) => writeFileSync(join(out, file), svg);
+const esc = (s) => String(s).replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;');
+
+// ---- farm
+const farmName = `${name.length > 11 ? name.split(' ')[0] : name}'s Farm`;
+write('farm.svg', renderFarm(calendar, { name: farmName, fieldScale: 2, season: process.env.FARM_SEASON }));
+
+// ---- dialogue: greeting + bio (+ the repo touched most recently)
+const own = profile.repos.filter((r) => !r.fork && r.full.toLowerCase() !== `${login}/${login}`.toLowerCase());
+let intro = cfg.intro;
+if (!Array.isArray(intro) || !intro.length) {
+  intro = wrap(profile.bio || 'Welcome to my little corner of GitHub.', 49).slice(0, 4);
+  if (own[0] && intro.length < 5) intro.push(...wrap(`Now tending: ${own[0].name.replace(/[-_]+/g, ' ')}`, 49).slice(0, 1));
+}
+const lines = [`Hi there! I'm ${name} *`, ...intro.map(clean)].slice(0, 6);
 const portrait = existsSync(join(out, 'portrait.png')) ? readFileSync(join(out, 'portrait.png')).toString('base64') : null;
-writeFileSync(join(out, 'dialogue.svg'), renderDialogue([
-  "Hi there! I'm Fe Anne *",
-  'BS Computer Science student, Univ. of Mindanao.',
-  'UI/UX designer and full-stack web developer.',
-  'I build AI tools, web apps & Chrome extensions.',
-  'Into machine learning, clean code and good UX.',
-  'Now building: AIVERA + an ML leaf scanner.',
-], { portrait }));
+write('dialogue.svg', renderDialogue(lines, { portrait, name }));
 
-writeFileSync(join(out, 'backpack.svg'), renderInventory([
-  { label: 'TypeScript', logo: 'ts', count: 8 },
-  { label: 'JavaScript', logo: 'js', count: 6 },
-  { label: 'Python', logo: 'python', count: 5 },
-  { label: 'PHP', logo: 'php', count: 3 },
-  { label: 'HTML5', logo: 'html', count: 2 },
-  { label: 'Vue', logo: 'vue', count: 1 },
-  { label: 'Java', logo: 'java', count: 1 },
-  { label: 'Dart', logo: 'dart', count: 1 },
-  { label: 'Figma', logo: 'figma', count: null, note: 'UI/UX design' },
-]));
+// ---- inventory: languages across my own repos (+ extra items from config)
+const extras = cfg.extraInventory || [];
+const langs = languages(profile).slice(0, Math.max(0, 9 - extras.length));
+const items = [
+  ...langs.map((l) => ({ label: l.name === 'Jupyter Notebook' ? 'Jupyter' : l.name, icon: l.name, color: l.color, count: l.count })),
+  ...extras.map((e) => ({ label: e.label, icon: e.icon || e.label, color: e.color, count: e.count ?? null, note: e.note })),
+];
+write('backpack.svg', renderInventory(items));
 
-console.log(`Built farm (${calendar.total} contributions, ${calendar.weeks.length} weeks${useSample ? ', sample data' : ''}).`);
+// ---- quest log: pinned repos (or most recently pushed ones)
+rmSync(join(out, 'quests'), { recursive: true, force: true });
+mkdirSync(join(out, 'quests'));
+const pinnedNames = cfg.quests;
+let quests = Array.isArray(pinnedNames) && pinnedNames.length
+  ? pinnedNames.map((n) => profile.repos.find((r) => r.name === n)).filter(Boolean)
+  : profile.pinned.length ? profile.pinned : own;
+quests = quests.slice(0, cfg.maxQuests || 6);
+quests.forEach((r, i) => write(`quests/${i + 1}.svg`, renderQuest(r, i)));
+write('banner-quests.svg', renderBanner('Quest Log', 'Projects I have been working on'));
+
+// ---- mailbox: social links + website + GitHub
+rmSync(join(out, 'mail'), { recursive: true, force: true });
+mkdirSync(join(out, 'mail'));
+const mail = [
+  ...profile.socials,
+  ...(profile.website ? [{ provider: 'WEBSITE', name: profile.website, url: profile.website.startsWith('http') ? profile.website : `https://${profile.website}` }] : []),
+  { provider: 'GITHUB', name: `@${login}`, url: `https://github.com/${login}` },
+];
+mail.forEach((s, i) => write(`mail/${i + 1}.svg`, renderMail(s)));
+write('banner-mail.svg', renderBanner('Mailbox', 'Send me a letter', socialIcon('GENERIC')));
+
+// ---- README
+const img = (src, alt, width = '100%') => `<img src="${src}"${width ? ` width="${width}"` : ''} alt="${esc(alt)}" />`;
+const still = (src, alt, width) => `<picture>${img(src, alt, width)}</picture>`; // <picture> = not clickable
+const readme = `<!-- Generated by scripts/build.mjs from my live GitHub profile. Edit profile.config.json or the scripts, not this file. -->
+<div align="center">
+
+${still('assets/farm.svg', `${farmName}: my last six months of GitHub contributions as a pixel farm. Busier days grow bigger crops while a little farmer waters the field from morning to night.`)}
+
+${still('assets/dialogue.svg', lines.join(' ').replace(/\*/g, '').trim())}
+
+${still('assets/backpack.svg', `Inventory: ${items.map((i) => i.label).join(', ')}`)}
+
+${still('assets/banner-quests.svg', 'Quest Log')}
+
+${quests.map((r, i) => `<a href="${r.url}">${img(`assets/quests/${i + 1}.svg`, `${r.name}: ${r.description}`)}</a>`).join('\n')}
+
+${still('assets/banner-mail.svg', 'Mailbox')}
+
+${mail.map((s, i) => `<a href="${s.url}">${img(`assets/mail/${i + 1}.svg`, `${s.provider.toLowerCase()}: ${s.name}`, '32%')}</a>`).join('\n')}
+
+<br/><br/>
+
+${still(`https://komarev.com/ghpvc/?username=${login}&label=Farm%20visitors&color=c48a4f&style=flat-square`, 'Farm visitors', null)}
+
+<sub>🌱 This farm regrows every 6 hours from my GitHub profile</sub>
+
+</div>
+`;
+writeFileSync(join(root, 'README.md'), readme);
+
+console.log(`Built profile for ${name}: ${calendar.total} contributions, ${items.length} items, ${quests.length} quests, ${mail.length} mail links${useSample ? ' (sample data)' : ''}.`);
