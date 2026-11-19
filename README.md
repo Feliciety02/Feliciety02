@@ -3,18 +3,18 @@
 
 <picture><img src="assets/farm.svg" width="100%" alt="Fe Anne's Farm: my last six months of GitHub contributions as a pixel farm. Busier days grow bigger crops while a little farmer waters the field from morning to night." /></picture>
 
-<picture><img src="assets/dialogue.svg" width="100%" alt="Hi there! I'm Fe Anne  BS Computer Science Student @ University of Mindanao UI/UX Designer • Web Developer • Creative Volunteer Building digital experiences &amp; community-drive Now tending: UMunity Organization Management" /></picture>
+<picture><img src="assets/dialogue.svg" width="100%" alt="Hi there! I'm Fe Anne  BS Computer Science Student @ University of Mindanao UI/UX Designer • Web Developer • Creative Volunteer Building digital experiences &amp; community-drive Now tending: UM GWA Calculator Extension" /></picture>
 
 <picture><img src="assets/backpack.svg" width="100%" alt="Inventory: TypeScript, Python, JavaScript, HTML, Vue, Jupyter, Dart, PHP, Figma" /></picture>
 
 <picture><img src="assets/banner-quests.svg" width="100%" alt="Quest Log" /></picture>
 
-<a href="https://github.com/Feliciety02/Jeopardy-Game"><img src="assets/quests/1.svg" width="100%" alt="Jeopardy-Game: " /></a>
-<a href="https://github.com/feliciety/UMUnity-School-Org-Management-System"><img src="assets/quests/2.svg" width="100%" alt="UMUnity-School-Org-Management-System: " /></a>
-<a href="https://github.com/Feliciety02/Automated-Parking-Lot-System"><img src="assets/quests/3.svg" width="100%" alt="Automated-Parking-Lot-System: " /></a>
-<a href="https://github.com/Feliciety02/Cosmic-Remidies-by-Sia"><img src="assets/quests/4.svg" width="100%" alt="Cosmic-Remidies-by-Sia: " /></a>
-<a href="https://github.com/Feliciety02/Handyman-Tools-and-Services"><img src="assets/quests/5.svg" width="100%" alt="Handyman-Tools-and-Services: " /></a>
-<a href="https://github.com/Feliciety02/Sakuragi-Tailoring-Sales-and-Inventory-Management"><img src="assets/quests/6.svg" width="100%" alt="Sakuragi-Tailoring-Sales-and-Inventory-Management: " /></a>
+<a href="https://github.com/Feliciety02/UM-GWA-Calculator-Extension"><img src="assets/quests/1.svg" width="100%" alt="UM-GWA-Calculator-Extension: Automatic UM SPR GWA calculation based on your final grades and units. PE, NSTP, CAED 500, and invalid grades are excluded." /></a>
+<a href="https://github.com/Feliciety02/Facebook-FriendList-Rehab"><img src="assets/quests/2.svg" width="100%" alt="Facebook-FriendList-Rehab: A privacy-first Chrome extension for reviewing inactive Facebook friends using visible activity, mutual friends, and safety-based filtering." /></a>
+<a href="https://github.com/Feliciety02/Banana-Leaf-Disease-Scanner"><img src="assets/quests/3.svg" width="100%" alt="Banana-Leaf-Disease-Scanner: AI-powered banana leaf disease scanner using MobileNetV3, self-supervised learning, knowledge distillation, and Coordinate Attention for mobile-based disease classification." /></a>
+<a href="https://github.com/Feliciety02/UMunity-Organization-Management-System-V.2"><img src="assets/quests/4.svg" width="100%" alt="UMunity-Organization-Management-System-V.2: " /></a>
+<a href="https://github.com/Feliciety02/ThesisTracker"><img src="assets/quests/5.svg" width="100%" alt="ThesisTracker: " /></a>
+<a href="https://github.com/Feliciety02/AIVERA-pro"><img src="assets/quests/6.svg" width="100%" alt="AIVERA-pro: " /></a>
 
 <picture><img src="assets/banner-mail.svg" width="100%" alt="Mailbox" /></picture>
 
