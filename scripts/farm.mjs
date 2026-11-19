@@ -251,7 +251,7 @@ export function renderFarm({ total, weeks: allWeeks }, { name = "Fe Anne's Farm"
   const FX = Math.round((W - cols * P * FS) / 2); // field left edge (global)
   const fieldB = Y0 + 7 * P * FS;
   const laneY = fieldB + 16;
-  const H = fieldB + 62;
+  const H = fieldB + 72;
   const KT = '0;0.5;0.6;0.68;0.75;0.9;0.96;1';
 
   // one season for the whole farm: the season of the latest day (or a forced one)
@@ -332,14 +332,17 @@ export function renderFarm({ total, weeks: allWeeks }, { name = "Fe Anne's Farm"
   for (let x = -6; x < W; x += 7 + Math.floor(rpi() * 5)) forest += `<use href="#pine" x="${x}" y="${hy - 16 - Math.floor(rpi() * 7)}"/>`;
   const meadow = `<rect x="0" y="${hy - 4}" width="${W}" height="${Y0 - hy + 4}" fill="url(#gr-${farmSeason})"/>`;
 
-  const cotX = W - 250, cotY = hy - 34;
-  const glow = [8, 33].map((wx) => `<rect x="${cotX + wx + 1}" y="${cotY + 26}" width="6" height="6" fill="#ffd36b"/>`).join('');
-  const smoke = [0, 1.2, 2.4].map((d) => `<rect class="smoke" x="${cotX + 34}" y="${cotY - 4}" width="4" height="4" fill="#eef2f5" style="animation-delay:${d}s"/>`).join('');
+  // house, barn and trees at 2x, standing in front of the top fence
+  const SS = 2, base = Y0 - 4;
+  const cotX = 404, cotY = base - 44 * SS;
+  const barnX = 506, barnY = base - 38 * SS;
+  const glow = [8, 33].map((wx) => `<rect x="${cotX + (wx + 1) * SS}" y="${cotY + 26 * SS}" width="${6 * SS}" height="${6 * SS}" fill="#ffd36b"/>`).join('');
+  const smoke = [0, 1.2, 2.4].map((d) => `<rect class="smoke" x="${cotX + 34 * SS}" y="${cotY - 8}" width="8" height="8" fill="#eef2f5" style="animation-delay:${d}s"/>`).join('');
   const scenery = `
-    <g transform="translate(${W - 190} ${hy - 30})">${sprite(barn(), BARN_PAL, 1)}</g>
-    <g transform="translate(${cotX} ${cotY})">${sprite(cottage(), COTTAGE_PAL, 1)}</g>${smoke}
-    <g transform="translate(${X0 + 300} ${hy - 40})">${sprite(oak(), OAK_PAL, 1)}</g>
-    <g transform="translate(${W - 100} ${hy - 36})">${sprite(oak(), OAK_PAL, 1)}</g>`;
+    <g transform="translate(${312} ${base - 46 * SS}) scale(${SS})">${sprite(oak(), OAK_PAL, 1)}</g>
+    <g transform="translate(${barnX} ${barnY}) scale(${SS})">${sprite(barn(), BARN_PAL, 1)}</g>
+    <g transform="translate(${cotX} ${cotY}) scale(${SS})">${sprite(cottage(), COTTAGE_PAL, 1)}</g>${smoke}
+    <g transform="translate(${590} ${base - 46 * SS}) scale(${SS})">${sprite(oak(), OAK_PAL, 1)}</g>`;
 
   // sky
   let stars = '';
@@ -432,7 +435,8 @@ export function renderFarm({ total, weeks: allWeeks }, { name = "Fe Anne's Farm"
     <g id="pine">${sprite(pine(), PINE_PAL)}</g>
     ${Object.entries(CROPS).map(([k, rows]) => `<g id="${k}">${sprite(rows, CP)}</g>`).join('')}
     ${Object.entries(SEASON).map(([k, s]) => grassPattern('gr-' + k, s)).join('')}
-    <pattern id="fence" width="16" height="14" patternUnits="userSpaceOnUse">${sprite(FENCE, FENCE_PAL)}</pattern>
+    <pattern id="fenceTop" width="16" height="14" y="${(Y0 - 38) / 2}" patternUnits="userSpaceOnUse" patternTransform="scale(2)">${sprite(FENCE, FENCE_PAL)}</pattern>
+    <pattern id="fenceBot" width="16" height="14" y="${(H - 28) / 2}" patternUnits="userSpaceOnUse" patternTransform="scale(2)">${sprite(FENCE, FENCE_PAL)}</pattern>
     <pattern id="dirt" width="24" height="18" patternUnits="userSpaceOnUse">
       <rect width="24" height="18" fill="#d8b07a"/><rect x="3" y="4" width="2" height="1" fill="#bf955c"/><rect x="14" y="11" width="3" height="2" fill="#b9b2a2"/><rect x="14" y="11" width="3" height="1" fill="#d6d0c2"/><rect x="20" y="3" width="1" height="1" fill="#e9c995"/>
     </pattern>
@@ -475,10 +479,10 @@ ${defs}${style}
   <g>${moon}<animateMotion dur="${T}s" repeatCount="indefinite" path="${sunArc}" keyPoints="0;0;1;1" keyTimes="0;0.62;0.99;1" calcMode="linear"/></g>
   ${clouds}
   ${far}${near}${forest}${meadow}
-  ${scenery}
   ${sign}${hud}
   ${ground}
-  <rect x="0" y="${Y0 - 30}" width="${W}" height="14" fill="url(#fence)"/>
+  <rect x="0" y="${Y0 - 38}" width="${W}" height="28" fill="url(#fenceTop)"/>
+  ${scenery}
   ${signs}
   <rect x="0" y="${laneY - 9}" width="${W}" height="18" fill="url(#dirt)"/><rect x="0" y="${laneY - 9}" width="${W}" height="1" fill="#b98f5a"/>
   ${flowers}${critters}
@@ -489,7 +493,7 @@ ${defs}${style}
   </g>
   ${particles}
   ${butterflies}
-  <rect x="0" y="${H - 14}" width="${W}" height="14" fill="url(#fence)"/>
+  <rect x="0" y="${H - 28}" width="${W}" height="28" fill="url(#fenceBot)"/>
   <rect width="${W}" height="${H}" fill="#14163d" opacity="0" pointer-events="none">${night('0;0;.1;.4;.5;.5;.16;0')}</rect>
   <g opacity="0">${glow}${fireflies}${night('0;0;0;.7;1;1;.2;0')}</g>
 </g>
