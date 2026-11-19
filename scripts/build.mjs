@@ -12,7 +12,7 @@ import { mkdirSync, writeFileSync, readFileSync, existsSync, rmSync } from 'node
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { fetchCalendar, sampleCalendar, renderFarm } from './farm.mjs';
-import { fetchProfile, sampleProfile, languages } from './profile.mjs';
+import { fetchProfile, sampleProfile, languages, relevantRepos } from './profile.mjs';
 import { renderDialogue, renderInventory, renderQuest, renderMail, renderBanner } from './cards.mjs';
 import { clean, wrap } from './pixel.mjs';
 import { socialIcon } from './logos.mjs';
@@ -39,7 +39,7 @@ const esc = (s) => String(s).replace(/&/g, '&amp;').replace(/"/g, '&quot;').repl
 
 // ---- farm
 const farmName = `${name.length > 11 ? name.split(' ')[0] : name}'s Farm`;
-write('farm.svg', renderFarm(calendar, { name: farmName, fieldScale: 2, season: process.env.FARM_SEASON }));
+write('farm.svg', renderFarm(calendar, { name: farmName, fieldScale: 2, season: process.env.FARM_SEASON, date: process.env.FARM_DATE }));
 
 // ---- dialogue: greeting + bio (+ the repo touched most recently)
 const own = profile.repos.filter((r) => !r.fork && r.full.toLowerCase() !== `${login}/${login}`.toLowerCase());
@@ -67,10 +67,10 @@ mkdirSync(join(out, 'quests'));
 const pinnedNames = cfg.quests;
 let quests = Array.isArray(pinnedNames) && pinnedNames.length
   ? pinnedNames.map((n) => profile.repos.find((r) => r.name === n)).filter(Boolean)
-  : profile.pinned.length ? profile.pinned : own;
-quests = quests.slice(0, cfg.maxQuests || 6);
-quests.forEach((r, i) => write(`quests/${i + 1}.svg`, renderQuest(r, i)));
-write('banner-quests.svg', renderBanner('Quest Log', 'Projects I have been working on'));
+  : cfg.questSource === 'pinned' && profile.pinned.length ? profile.pinned.slice(0, cfg.maxQuests || 6)
+  : relevantRepos(profile, cfg.maxQuests || 6);
+quests.forEach((r, i) => write(`quests/${i + 1}.svg`, renderQuest(r, i, { now: Date.parse(calendar.weeks.flat().at(-1).date) + 864e5 })));
+write('banner-quests.svg', renderBanner('Quest Log', 'What I have been working on lately'));
 
 // ---- mailbox: social links + website + GitHub
 rmSync(join(out, 'mail'), { recursive: true, force: true });

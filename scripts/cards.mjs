@@ -145,11 +145,23 @@ ${st ? `<rect x="${Math.round(W / 2 - textWidth(st, 2) / 2 - 12)}" y="${H + 1}" 
 }
 
 /** One quest-log entry for a repository. */
-export function renderQuest(repo, i = 0) {
+const ago = (iso, now) => {
+  if (!iso) return '';
+  const d = Math.max(0, Math.floor((now - Date.parse(iso)) / 864e5));
+  return d === 0 ? 'today' : d < 30 ? `${d}d ago` : d < 365 ? `${Math.floor(d / 30)}mo ago` : `${Math.floor(d / 365)}y ago`;
+};
+
+export function renderQuest(repo, i = 0, { now = Date.now() } = {}) {
   const H = 100;
-  const name = fit(clean(repo.name.replace(/[-_]+/g, ' ')), 46);
-  const desc = wrap(repo.description || 'A quest still waiting for its description.', 62).slice(0, 2);
-  if (wrap(repo.description || '', 62).length > 2) desc[1] = fit(desc[1] + ' ...', 62);
+  const isNew = repo.createdAt && now - Date.parse(repo.createdAt) < 21 * 864e5;
+  const name = fit(clean(repo.name.replace(/[-_]+/g, ' ')), isNew ? 38 : 46);
+  const dmax = 49;
+  const desc = wrap(repo.description || 'A quest still waiting for its description.', dmax).slice(0, 2);
+  if (wrap(repo.description || '', dmax).length > 2) desc[1] = fit(desc[1] + ' ...', dmax);
+  const updated = repo.pushedAt ? `Updated ${ago(repo.pushedAt, now)}` : '';
+  const uw = textWidth(updated, 2);
+  const nx = 100 + textWidth(name, 2) + 12;
+  const badge = isNew ? `<rect x="${nx}" y="16" width="${textWidth('NEW!', 2) + 12}" height="22" fill="#c23a4c"/>${text('NEW!', nx + 6, 20, 2, '#fff3d6')}` : '';
   const [rows, pal] = logoFor(repo.language || 'Code', repo.color);
   const lang = clean(repo.language || 'Misc');
   const reward = `${lang}${repo.stars ? `  ★${repo.stars}` : ''}`;
@@ -163,6 +175,7 @@ ${sprite(rows, pal, 3, 26, 26)}
 <rect x="${W / 2 - 3}" y="4" width="6" height="6" fill="#c23a4c"/><rect x="${W / 2 - 2}" y="5" width="2" height="2" fill="#ffb3b8"/>
 ${text(name, 100, 20, 2, '#c23a4c', '#f3c9a6')}
 <rect x="${W - 28 - rw - 16}" y="16" width="${rw + 16}" height="22" fill="#f0d4a0"/>${text(reward, W - 28 - rw - 8, 20, 2, '#6a4224')}
+${badge}${updated ? text(updated, W - 28 - uw - 8, 50, 2, '#3f8a2e') : ''}
 ${desc.map((l, k) => text(l, 100, 48 + k * 22, 2, '#4a2a14')).join('')}
 </svg>`;
 }

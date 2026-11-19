@@ -6,9 +6,9 @@ export async function fetchProfile(login, token) {
     name login bio websiteUrl
     socialAccounts(first:10){nodes{provider displayName url}}
     pinnedItems(first:6,types:REPOSITORY){nodes{... on Repository{
-      name nameWithOwner description url stargazerCount isFork primaryLanguage{name color}}}}
+      name nameWithOwner description url stargazerCount isFork isArchived pushedAt createdAt primaryLanguage{name color}}}}
     repositories(first:100,ownerAffiliations:OWNER,privacy:PUBLIC,orderBy:{field:PUSHED_AT,direction:DESC}){nodes{
-      name nameWithOwner description url stargazerCount isFork pushedAt primaryLanguage{name color}}}
+      name nameWithOwner description url stargazerCount isFork isArchived pushedAt createdAt primaryLanguage{name color}}}
   }}`;
   const res = await fetch('https://api.github.com/graphql', {
     method: 'POST',
@@ -20,7 +20,7 @@ export async function fetchProfile(login, token) {
   const u = json.data.user;
   const repo = (r) => ({
     name: r.name, full: r.nameWithOwner, description: r.description || '', url: r.url, stars: r.stargazerCount,
-    fork: r.isFork, language: r.primaryLanguage?.name || null, color: r.primaryLanguage?.color || '#8a8a8a',
+    fork: r.isFork, archived: !!r.isArchived, pushedAt: r.pushedAt, createdAt: r.createdAt, language: r.primaryLanguage?.name || null, color: r.primaryLanguage?.color || '#8a8a8a',
   });
   return {
     name: u.name || u.login, login: u.login, bio: u.bio || '', website: u.websiteUrl || '',
@@ -32,8 +32,10 @@ export async function fetchProfile(login, token) {
 
 /** Offline stand-in with the same shape (used for local previews). */
 export function sampleProfile(login = 'Feliciety02') {
+  let k = 0;
   const r = (name, language, color, description = '', fork = false) => ({
-    name, full: `${login}/${name}`, description, url: `https://github.com/${login}/${name}`, stars: 0, fork, language, color,
+    name, full: `${login}/${name}`, description, url: `https://github.com/${login}/${name}`, stars: 0, fork, archived: false, language, color,
+    pushedAt: new Date(Date.now() - (k++ ** 1.6) * 864e5).toISOString(), createdAt: new Date(Date.now() - (k * 9) * 864e5).toISOString(),
   });
   const repos = [
     r('cs24-lab1', 'Python', '#3572A5'), r('UMunity-Organization-Management-System-V.2', 'TypeScript', '#3178c6'),
@@ -70,4 +72,23 @@ export function languages(profile) {
     tally.set(r.language, t);
   });
   return [...tally.values()].sort((a, b) => b.count - a.count);
+}
+
+/**
+ * The quest log, picked automatically: my own repos ranked by how recently I
+ * worked on them, with a bonus for stars, a description and being pinned.
+ * Forks, archived repos and the profile repo itself are left out.
+ */
+export function relevantRepos(profile, n = 6, now = Date.now()) {
+  const pinned = new Set(profile.pinned.map((r) => r.full));
+  const self = `${profile.login}/${profile.login}`.toLowerCase();
+  return profile.repos
+    .filter((r) => !r.fork && !r.archived && r.full.toLowerCase() !== self)
+    .map((r) => {
+      const days = r.pushedAt ? (now - Date.parse(r.pushedAt)) / 864e5 : 365;
+      const score = 100 / (1 + days / 10) + Math.min(r.stars, 20) * 3 + (r.description ? 12 : 0) + (pinned.has(r.full) ? 15 : 0);
+      return { ...r, score };
+    })
+    .sort((a, b) => b.score - a.score)
+    .slice(0, n);
 }

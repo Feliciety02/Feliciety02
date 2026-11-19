@@ -241,8 +241,32 @@ function grassPattern(id, s) {
   </pattern>`;
 }
 
+// ------------------------------------------------- seasons and events
+const OAK_BY_SEASON = {
+  spring: { ...OAK_PAL, h: '#3a8a36', G: '#5cb84a', g: '#8fd86a', p: '#ffb7d0' },
+  summer: { ...OAK_PAL, p: '#e8434b' },
+  fall: { ...OAK_PAL, h: '#a8501f', G: '#d9772b', g: '#f2b14a', p: '#c23a2c', k: '#5a2a10' },
+  winter: { ...OAK_PAL, h: '#9fb3c6', G: '#d6e4f0', g: '#ffffff', p: '#ffffff', k: '#6a7d90' },
+};
+const PINE_BY_SEASON = {
+  spring: PINE_PAL, summer: PINE_PAL,
+  fall: { ...PINE_PAL, g: '#6a9a4a' },
+  winter: { ...PINE_PAL, g: '#ffffff', h: '#1d4a30' },
+};
+/** Special decorations that switch on by date. */
+export function eventsOn(iso) {
+  const m = +iso.slice(5, 7), d = +iso.slice(8, 10);
+  return {
+    halloween: m === 10 && d >= 15,
+    christmas: m === 12 && d <= 30,
+    newYear: (m === 12 && d === 31) || (m === 1 && d <= 3),
+    valentine: m === 2 && d >= 7 && d <= 14,
+  };
+}
+const LANTERN = ['...GG...', '.oOOOOo.', 'oOyOOyOo', 'oOOOOOOo', 'oOyyyyOo', '.oOOOOo.'];
+
 // ------------------------------------------------------------------ render
-export function renderFarm({ total, weeks: allWeeks }, { name = "Fe Anne's Farm", width = 896, fieldScale = 2, season: forced } = {}) {
+export function renderFarm({ total, weeks: allWeeks }, { name = "Fe Anne's Farm", width = 896, fieldScale = 2, season: forced, date: forcedDate } = {}) {
   // Fixed canvas width; the field shows as many recent weeks as fit at fieldScale.
   const FS = fieldScale;
   const W = width, X0 = 24, Y0 = 158;
@@ -255,7 +279,9 @@ export function renderFarm({ total, weeks: allWeeks }, { name = "Fe Anne's Farm"
   const KT = '0;0.5;0.6;0.68;0.75;0.9;0.96;1';
 
   // one season for the whole farm: the season of the latest day (or a forced one)
-  const farmSeason = forced || seasonOf(allWeeks.flat().at(-1).date);
+  const today = forcedDate || allWeeks.flat().at(-1).date;
+  const farmSeason = forced || seasonOf(today);
+  const ev = eventsOn(today);
   const colSeason = weeks.map(() => farmSeason);
 
   // farmer route in field-local units (the field group is scaled by FS)
@@ -339,10 +365,41 @@ export function renderFarm({ total, weeks: allWeeks }, { name = "Fe Anne's Farm"
   const glow = [8, 33].map((wx) => `<rect x="${cotX + (wx + 1) * SS}" y="${cotY + 26 * SS}" width="${6 * SS}" height="${6 * SS}" fill="#ffd36b"/>`).join('');
   const smoke = [0, 1.2, 2.4].map((d) => `<rect class="smoke" x="${cotX + 34 * SS}" y="${cotY - 8}" width="8" height="8" fill="#eef2f5" style="animation-delay:${d}s"/>`).join('');
   const scenery = `
-    <g transform="translate(${312} ${base - 46 * SS}) scale(${SS})">${sprite(oak(), OAK_PAL, 1)}</g>
+    <g transform="translate(${312} ${base - 46 * SS}) scale(${SS})">${sprite(oak(), OAK_BY_SEASON[farmSeason], 1)}</g>
     <g transform="translate(${barnX} ${barnY}) scale(${SS})">${sprite(barn(), BARN_PAL, 1)}</g>
     <g transform="translate(${cotX} ${cotY}) scale(${SS})">${sprite(cottage(), COTTAGE_PAL, 1)}</g>${smoke}
-    <g transform="translate(${590} ${base - 46 * SS}) scale(${SS})">${sprite(oak(), OAK_PAL, 1)}</g>`;
+    <g transform="translate(${590} ${base - 46 * SS}) scale(${SS})">${sprite(oak(), OAK_BY_SEASON[farmSeason], 1)}</g>`;
+
+  // ---- date-based events
+  const LIGHTS = ['#ff5a5f', '#ffe066', '#7cc7ff', '#7fe07a'];
+  let evDay = '', evGlow = '', evNight = '';
+  if (ev.christmas) {
+    let k = 0;
+    const bulb = (x, y) => `<rect class="xl" x="${x}" y="${y}" width="4" height="4" fill="${LIGHTS[k % 4]}" style="animation-delay:${(k++ % 4) * 0.3}s"/>`;
+    for (let i = 0; i <= 16; i += 2) { evGlow += bulb(cotX + (17 - i) * SS - 2, cotY + (i + 2) * SS); evGlow += bulb(cotX + (30 + i) * SS - 2, cotY + (i + 2) * SS); }
+    for (let x = 10; x < W; x += 22) evGlow += bulb(x, Y0 - 31 + (x % 44 ? 2 : 0));
+    evDay += `<g transform="translate(${cotX + 21 * SS} ${cotY + 29 * SS})"><rect x="0" y="0" width="14" height="14" rx="7" fill="#2c7440"/><rect x="4" y="4" width="6" height="6" fill="#9a6234"/><rect x="5" y="10" width="4" height="4" fill="#e8434b"/></g>`;
+  }
+  if (ev.halloween) {
+    for (let i = 0; i < 6; i++) {
+      const x = 40 + i * 150 + (i % 2) * 30, y = fieldB + 30;
+      evGlow += sprite(LANTERN, { G: "#3f8a2e", o: "#f39a2b", O: "#d9671a", y: "#ffe066" }, 3, x, y - 4);
+      evNight += `<rect x="${x - 6}" y="${y - 4}" width="36" height="26" rx="13" fill="#ffb347" opacity=".35"/>`;
+    }
+  }
+  if (ev.valentine) {
+    const rh = rng(14);
+    for (let i = 0; i < 14; i++) evDay += `<g class="hrt" style="animation-delay:${(-rh() * 8).toFixed(1)}s">${sprite(ICONS.heart, CP, 2, Math.floor(rh() * W), Y0 + 40 + Math.floor(rh() * 60))}</g>`;
+  }
+  if (ev.newYear) {
+    const rw = rng(31);
+    for (let i = 0; i < 6; i++) {
+      const cx = 60 + Math.floor(rw() * (W - 120)), cy = 20 + Math.floor(rw() * 60), col = LIGHTS[i % 4];
+      let rays = '';
+      for (let a = 0; a < 8; a++) { const dx = Math.round(Math.cos(a * Math.PI / 4) * 14), dy = Math.round(Math.sin(a * Math.PI / 4) * 14); rays += `<rect x="${cx + dx - 1}" y="${cy + dy - 1}" width="3" height="3" fill="${col}"/>`; }
+      evNight += `<g class="fw" style="animation-delay:${(i * 0.7).toFixed(1)}s;transform-origin:${cx}px ${cy}px">${rays}<rect x="${cx - 1}" y="${cy - 1}" width="3" height="3" fill="#ffffff"/></g>`;
+    }
+  }
 
   // sky
   let stars = '';
@@ -371,9 +428,9 @@ export function renderFarm({ total, weeks: allWeeks }, { name = "Fe Anne's Farm"
 
   // HUD panel: date, season, harvest, streak + a dial that turns with the day
   const lastDay = weeks.flat().at(-1).date;
-  const dt = new Date(lastDay + 'T00:00:00Z');
+  const dt = new Date(today + 'T00:00:00Z');
   const dateStr = dt.toLocaleDateString('en-US', { weekday: 'short', timeZone: 'UTC' }) + '. ' + dt.toLocaleDateString('en-US', { month: 'short', day: 'numeric', timeZone: 'UTC' });
-  const season = seasonOf(lastDay);
+  const season = farmSeason;
   const lines = [[null, dateStr], [SEASON[season].icon, season[0].toUpperCase() + season.slice(1)], ['coin', `${total.toLocaleString('en-US')} crops`], ['heart', `${streak(weeks)} day streak`]];
   const hudW = Math.max(...lines.map(([, s]) => textWidth(s, 2))) + 46;
   const hudH = 96;
@@ -432,7 +489,7 @@ export function renderFarm({ total, weeks: allWeeks }, { name = "Fe Anne's Farm"
     <g id="soil">${sprite(soilTile(false), SOIL_PAL)}</g>
     <g id="soilS">${sprite(soilTile(false), SOIL_PAL)}<path fill="#ffffff" d="M2 1h3v1h-3zM9 0h4v1h-4zM6 7h2v1h-2zM11 11h3v1h-3zM1 13h2v1h-2z"/></g>
     <g id="wet">${sprite(soilTile(true), SOIL_PAL)}</g>
-    <g id="pine">${sprite(pine(), PINE_PAL)}</g>
+    <g id="pine">${sprite(pine(), PINE_BY_SEASON[farmSeason])}</g>
     ${Object.entries(CROPS).map(([k, rows]) => `<g id="${k}">${sprite(rows, CP)}</g>`).join('')}
     ${Object.entries(SEASON).map(([k, s]) => grassPattern('gr-' + k, s)).join('')}
     <pattern id="fenceTop" width="16" height="14" y="${(Y0 - 38) / 2}" patternUnits="userSpaceOnUse" patternTransform="scale(2)">${sprite(FENCE, FENCE_PAL)}</pattern>
@@ -464,7 +521,10 @@ export function renderFarm({ total, weeks: allWeeks }, { name = "Fe Anne's Farm"
     .zz{animation:zz 2.4s linear infinite}@keyframes zz{0%{transform:translate(0,0);opacity:0}30%{opacity:1}100%{transform:translate(6px,-10px);opacity:0}}
     .pt{animation:fall 8s linear infinite}.snow{fill:#ffffff}.petal{fill:#ffb3d1}.leafp{fill:#e8742c}
     @keyframes fall{0%{transform:translate(0,0);opacity:0}10%{opacity:1}50%{transform:translate(7px,80px)}90%{opacity:1}100%{transform:translate(-3px,165px);opacity:0}}
-    @media (prefers-reduced-motion:reduce){.g,.g2,.w,.ck,.cf,.ff,.tw,.bf,.fa,.fb,.bob,.dr,.smoke,.zz,.pt,.sp{animation:none}.w,.fb,.sp{opacity:0}}
+    .xl{animation:xl 1.2s steps(1) infinite}@keyframes xl{50%{opacity:.35}}
+    .hrt{animation:hrt 8s linear infinite}@keyframes hrt{0%{transform:translateY(0);opacity:0}15%{opacity:1}100%{transform:translateY(-150px);opacity:0}}
+    .fw{animation:fw 2.4s ease-out infinite;transform-box:view-box}@keyframes fw{0%{transform:scale(.1);opacity:1}60%{opacity:1}100%{transform:scale(1.3);opacity:0}}
+    @media (prefers-reduced-motion:reduce){.xl,.hrt,.fw{animation:none}.g,.g2,.w,.ck,.cf,.ff,.tw,.bf,.fa,.fb,.bob,.dr,.smoke,.zz,.pt,.sp{animation:none}.w,.fb,.sp{opacity:0}}
   </style>`;
 
   const night = (vals) => `<animate attributeName="opacity" dur="${T}s" repeatCount="indefinite" keyTimes="${KT}" values="${vals}"/>`;
@@ -492,10 +552,12 @@ ${defs}${style}
     ${farmer}
   </g>
   ${particles}
+  ${evDay}
   ${butterflies}
   <rect x="0" y="${H - 28}" width="${W}" height="28" fill="url(#fenceBot)"/>
   <rect width="${W}" height="${H}" fill="#14163d" opacity="0" pointer-events="none">${night('0;0;.1;.4;.5;.5;.16;0')}</rect>
-  <g opacity="0">${glow}${fireflies}${night('0;0;0;.7;1;1;.2;0')}</g>
+  <g opacity="0">${glow}${fireflies}${evNight}${night('0;0;0;.7;1;1;.2;0')}</g>
+  ${evGlow}
 </g>
 <rect x="1.5" y="1.5" width="${W - 3}" height="${H - 3}" rx="11" fill="none" stroke="#4a2a14" stroke-width="3"/>
 </svg>`;
