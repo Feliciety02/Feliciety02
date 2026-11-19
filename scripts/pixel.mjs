@@ -94,6 +94,21 @@ const G = {
   '&': '.##.. #..#. .##.. .#... #.#.# #..#. .##.#',
   '/': '....# ....# ...#. ..#.. .#... #.... #....',
   '*': '..... .#.#. ##### ##### .###. ..#.. .....', // heart
+  '@': '.###. #...# #.### #.#.# #.### #.... .###.',
+  '_': '..... ..... ..... ..... ..... ..... #####',
+  '#': '.#.#. .#.#. ##### .#.#. ##### .#.#. .#.#.',
+  '"': '.#.#. .#.#. ..... ..... ..... ..... .....',
+  ';': '..... ..#.. ..... ..... ..... ..#.. .#...',
+  '%': '##..# ##.#. ...#. ..#.. .#... .#.## #..##',
+  '[': '.###. .#... .#... .#... .#... .#... .###.',
+  ']': '.###. ...#. ...#. ...#. ...#. ...#. .###.',
+  '|': '..#.. ..#.. ..#.. ..#.. ..#.. ..#.. ..#..',
+  '<': '...#. ..#.. .#... #.... .#... ..#.. ...#.',
+  '>': '.#... ..#.. ...#. ....# ...#. ..#.. .#...',
+  '•': '..... ..... .###. .###. .###. ..... .....',
+  '$': '..#.. .#### #.#.. .###. ..#.# ####. ..#..',
+  '~': '..... ..... .#... #.#.# ...#. ..... .....',
+  '★': '..#.. ..#.. ##### .###. .#.#. #...# .....',
   ' ': '..... ..... ..... ..... ..... ..... .....',
 };
 export const GLYPHS = Object.fromEntries(Object.entries(G).map(([k, v]) => [k, v.split(' ')]));
@@ -172,4 +187,26 @@ export function snowify(rows, ch = 'w') {
   const w = Math.max(...rows.map((r) => r.length));
   for (let x = 0; x < w; x++) for (let y = 0; y < out.length; y++) if (out[y][x] && out[y][x] !== '.') { out[y][x] = ch; break; }
   return out.map((r) => r.join(''));
+}
+
+/** Keep only characters the pixel font can draw (drops emoji etc.). */
+export function clean(str) {
+  return [...String(str || '')
+    .replace(/[–—]/g, '-').replace(/[‘’]/g, "'").replace(/[“”]/g, '"').replace(/·/g, '•')]
+    .filter((ch) => GLYPHS[ch] || GLYPHS[ch.toUpperCase()])
+    .join('').replace(/\s+/g, ' ').trim();
+}
+
+/** Greedy word wrap to at most max characters per line. */
+export function wrap(str, max) {
+  const lines = [];
+  let line = '';
+  for (let word of clean(str).split(' ')) {
+    while (word.length > max) { if (line) { lines.push(line); line = ''; } lines.push(word.slice(0, max - 1) + '-'); word = word.slice(max - 1); }
+    if (!line) line = word;
+    else if ((line + ' ' + word).length <= max) line += ' ' + word;
+    else { lines.push(line); line = word; }
+  }
+  if (line) lines.push(line);
+  return lines;
 }

@@ -17,9 +17,9 @@ const CP = { // crops
   e: '#fff09a', E: '#e2bf35', w: '#ffffff', W: '#d6e4f0', x: '#20160e', q: '#ff8a3d',
   K: '#2d1b10', i: '#c8f0ff', I: '#5aa9e6',
 };
-const FP = { // farmer
-  T: '#c9973a', t: '#f4d27a', H: '#d94a5a', n: '#7a4428', N: '#55301b', s: '#ffd6b3', S: '#d9776a',
-  x: '#2a1d14', q: '#ff9aa8', r: '#ea6b74', u: '#5486d6', U: '#355ea6', f: '#5a3a1e', m: '#c7d2d9', M: '#7d8b95',
+const FP = { // farmer, coloured after the portrait (assets/portrait.png)
+  n: '#5a2a3c', N: '#2a0c24', h: '#7e4250', s: '#fcba8a', S: '#c8606a', x: '#2a0c1e', q: '#f79a8c',
+  r: '#543654', u: '#3c2442', U: '#240c24', f: '#1e0c18', e: '#f4efe6', m: '#c7d2d9', M: '#7d8b95',
 };
 
 const SEASON = {
@@ -60,10 +60,10 @@ const BY_SEASON = {
   winter: [[], ['frostSprout'], ['frostYoung'], ['holly'], ['snowman', 'crystal']],
 };
 
-const HEAD = [
-  '....TTTTTTTT....', '...TttttttttT...', '...TttttttttT...', '..THHHHHHHHHHT..', 'TTttttttttttttTT', '.TTTTTTTTTTTTTT.', '..nnnnnnnnnnnn..',
+const HEAD = [ // hair in a bun, like the portrait
+  '......NNNN......', '.....NnhhnN.....', '....NNnnnnNN....', '...NnnhhhnnnN...', '..NnnhnnnnnnnN..', '..NnnnnnnnnnnN..', '..nnnnnnnnnnnn..',
 ];
-const FRONT = [...HEAD, '.nnNnsssssnNnnn.', '.nnsxxssssxxsnn.', '.nnsxxssssxxsnn.', '.nnqssssssssqnn.', '.nnssssSSssssnn.', '.nnn.ssssss.nnn.',
+const FRONT = [...HEAD, '.nnNnsssssnNnnn.', '.nnsxxssssxxsnn.', '.nnsxxssssxxsnn.', '.nnqssssssssqnn.', '.enssssSSssssnn.', '.nnn.ssssss.nnn.',
   '.nnrrrrrrrrrrnn.', '.nnrruurruurrnn.', '.srruuuuuuuurrs.', '.ss.uuuuuuuu.ss.', '....uuuUUuuu....', '....uuuUUuuu....', '....uuuuuuuu....'];
 const BACK = [...HEAD, '.nnnnnnnnnnnnnn.', '.nnNnnnnnnnNnnn.', '.nnnnnnnnnnnnnn.', '.nnnNnnnnnnNnnn.', '.nnnnnnnnnnnnnn.', '.nnnnnnnnnnnnnn.',
   '.nnnnrrrrrrnnnn.', '.nnnrruUUurrnnn.', '.srrruuuuuuurrs.', '.ss.uuuuuuuu.ss.', '....uuuUUuuu....', '....uuuUUuuu....', '....uuuuuuuu....'];

@@ -1,6 +1,6 @@
 // The dialogue box ("Hi, I'm Fe Anne") and the backpack inventory.
-import { sprite, text, textWidth } from './pixel.mjs';
-import { logo } from './logos.mjs';
+import { sprite, text, textWidth, clean, wrap } from './pixel.mjs';
+import { logoFor, socialIcon } from './logos.mjs';
 
 const W = 896;
 const DARK = '#4a2a14';
@@ -91,7 +91,7 @@ export function renderInventory(items) {
   let slots = '', names = '';
   items.forEach((it, i) => {
     const x = x0 + i * pitch;
-    const [rows, pal] = logo(it.logo);
+    const [rows, pal] = logoFor(it.icon || it.label, it.color);
     const s = 3, iw = 16 * s;
     const icon = `<g transform="translate(${x + 7} ${y0 + 6})"><rect x="2" y="${iw - 1}" width="${iw - 4}" height="3" fill="#d9bd86"/>${sprite(rows, pal, s)}</g>`;
     const count = it.count != null ? text(String(it.count), x + slot - 5 - textWidth(String(it.count), 2), y0 + slot - 18, 2, '#ffffff', DARK) : '';
@@ -117,5 +117,69 @@ ${text(tag, x0 + gridW - textWidth(tag, 2), 26, 2, '#8a5a33')}
 ${slots}${cursor}
 <rect x="${x0}" y="${barY}" width="${gridW}" height="26" fill="${DARK}"/><rect x="${x0 + 3}" y="${barY + 3}" width="${gridW - 6}" height="20" fill="#f6dfae"/>
 ${names}
+</svg>`;
+}
+
+const svgOpen = (w, h, title) => `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${w} ${h}" width="${w}" height="${h}" shape-rendering="crispEdges" role="img" aria-label="${title.replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;')}">`;
+const fit = (s, n) => (s.length > n ? s.slice(0, n - 2).trimEnd() + '..' : s);
+
+/** A wooden signboard used as a section heading. */
+export function renderBanner(title, subtitle = '', icon = null) {
+  const H = 64;
+  const t = clean(title), st = clean(subtitle);
+  const tw = textWidth(t, 3);
+  const iconW = icon ? 40 : 0;
+  const boardW = Math.max(tw + iconW + 56, st ? textWidth(st, 2) + 40 : 0);
+  const bx = Math.round((W - boardW) / 2);
+  const ic = icon ? sprite(icon[0], icon[1], 2, bx + 22, 12) : '';
+  return `${svgOpen(W, H + (st ? 30 : 0), t)}
+<rect x="0" y="22" width="${W}" height="6" fill="#a8733d"/><rect x="0" y="22" width="${W}" height="2" fill="#d9a565"/>
+${st ? `<rect x="${Math.round(W / 2 - 3)}" y="${H - 6}" width="6" height="8" fill="#6a4224"/>` : ''}
+<rect x="${bx}" y="2" width="${boardW}" height="${H - 6}" rx="4" fill="${DARK}"/>
+<rect x="${bx + 3}" y="5" width="${boardW - 6}" height="${(H - 12) / 2}" fill="#d9a565"/><rect x="${bx + 3}" y="${5 + (H - 12) / 2}" width="${boardW - 6}" height="${(H - 12) / 2}" fill="#c8924f"/>
+<rect x="${bx + 3}" y="5" width="${boardW - 6}" height="2" fill="#efc488"/>
+<rect x="${bx + 7}" y="9" width="3" height="3" fill="#8f6a2e"/><rect x="${bx + boardW - 10}" y="9" width="3" height="3" fill="#8f6a2e"/><rect x="${bx + 7}" y="${H - 15}" width="3" height="3" fill="#8f6a2e"/><rect x="${bx + boardW - 10}" y="${H - 15}" width="3" height="3" fill="#8f6a2e"/>
+${ic}${text(t, bx + 28 + iconW, 18, 3, '#fff3d6', '#5b3218')}
+${st ? `<rect x="${Math.round(W / 2 - textWidth(st, 2) / 2 - 12)}" y="${H + 1}" width="${textWidth(st, 2) + 24}" height="26" rx="3" fill="${DARK}"/><rect x="${Math.round(W / 2 - textWidth(st, 2) / 2 - 9)}" y="${H + 4}" width="${textWidth(st, 2) + 18}" height="20" fill="#fff1cf"/>${text(st, Math.round(W / 2 - textWidth(st, 2) / 2), H + 8, 2, '#6a4224')}` : ''}
+</svg>`;
+}
+
+/** One quest-log entry for a repository. */
+export function renderQuest(repo, i = 0) {
+  const H = 100;
+  const name = fit(clean(repo.name.replace(/[-_]+/g, ' ')), 46);
+  const desc = wrap(repo.description || 'A quest still waiting for its description.', 62).slice(0, 2);
+  if (wrap(repo.description || '', 62).length > 2) desc[1] = fit(desc[1] + ' ...', 62);
+  const [rows, pal] = logoFor(repo.language || 'Code', repo.color);
+  const lang = clean(repo.language || 'Misc');
+  const reward = `${lang}${repo.stars ? `  ★${repo.stars}` : ''}`;
+  const rw = textWidth(reward, 2);
+  return `${svgOpen(W, H, `${repo.name}: ${repo.description || ''}`)}
+<rect x="0" y="0" width="${W}" height="${H}" rx="8" fill="${DARK}"/>
+<rect x="3" y="3" width="${W - 6}" height="${H - 6}" rx="5" fill="#c8924f"/><rect x="5" y="4" width="${W - 10}" height="2" fill="#efc488"/>
+<rect x="9" y="9" width="${W - 18}" height="${H - 18}" fill="#fff1cf"/><rect x="9" y="9" width="${W - 18}" height="3" fill="#f0dcae"/>
+<rect x="18" y="18" width="64" height="64" fill="${DARK}"/><rect x="21" y="21" width="58" height="58" fill="#f6dfae"/><rect x="21" y="21" width="58" height="3" fill="#dcbd83"/>
+${sprite(rows, pal, 3, 26, 26)}
+<rect x="${W / 2 - 3}" y="4" width="6" height="6" fill="#c23a4c"/><rect x="${W / 2 - 2}" y="5" width="2" height="2" fill="#ffb3b8"/>
+${text(name, 100, 20, 2, '#c23a4c', '#f3c9a6')}
+<rect x="${W - 28 - rw - 16}" y="16" width="${rw + 16}" height="22" fill="#f0d4a0"/>${text(reward, W - 28 - rw - 8, 20, 2, '#6a4224')}
+${desc.map((l, k) => text(l, 100, 48 + k * 22, 2, '#4a2a14')).join('')}
+</svg>`;
+}
+
+/** A wooden mailbox button for one social link. */
+export function renderMail(social) {
+  const w = 292, H = 72;
+  const [rows, pal] = socialIcon(social.provider);
+  const label = { LINKEDIN: 'LinkedIn', INSTAGRAM: 'Instagram', FACEBOOK: 'Facebook', TWITTER: 'X', YOUTUBE: 'YouTube', WEBSITE: 'Website', GITHUB: 'GitHub' }[social.provider] || clean(social.provider[0] + social.provider.slice(1).toLowerCase());
+  let handle = clean(social.name || social.url.replace(/^https?:\/\/(www\.)?/, ''));
+  handle = fit(handle.replace(/^in\//, '').replace(/-[0-9a-f]{6,}$/i, ''), 17);
+  return `${svgOpen(w, H, `${label}: ${handle}`)}
+<rect width="${w}" height="${H}" rx="8" fill="${DARK}"/>
+<rect x="3" y="3" width="${w - 6}" height="${H - 6}" rx="5" fill="#c8924f"/><rect x="5" y="4" width="${w - 10}" height="2" fill="#efc488"/><rect x="5" y="${H - 7}" width="${w - 10}" height="2" fill="#a8733d"/>
+<rect x="12" y="12" width="48" height="48" fill="${DARK}"/><rect x="15" y="15" width="42" height="42" fill="#fff1cf"/>
+${sprite(rows, pal, 2, 20, 20)}
+${text(label, 74, 16, 2, '#fff3d6', '#5b3218')}
+${text(handle, 74, 42, 2, '#4a2a14')}
 </svg>`;
 }
