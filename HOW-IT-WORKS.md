@@ -17,7 +17,7 @@ My profile README is **generated** — every picture on it is an animated SVG dr
 
 The little farmer walking the rows is a pixel version of me, drawn in `scripts/farm.mjs` (`FP` palette, `TOP`, `FRONT`, `BACK`, `LEGS_A`, `LEGS_B`):
 
-- **Hair:** chestnut-brown high bun with wispy bangs, falling to the shoulders
+- **Hair:** chestnut-brown hair in a low bun at the nape, with wispy bangs
 - **Face:** brown eyes with a white shine, pink blush
 - **Earrings:** one white pearl on each ear, visible from the front and the back
 - **Outfit:** black short-sleeved top under blue overalls with gold buttons and a pocket, and brown boots

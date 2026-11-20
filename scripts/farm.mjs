@@ -17,7 +17,7 @@ const CP = { // crops
   e: '#fff09a', E: '#e2bf35', w: '#ffffff', W: '#d6e4f0', x: '#20160e', q: '#ff8a3d',
   K: '#2d1b10', i: '#c8f0ff', I: '#5aa9e6',
 };
-const FP = { // farmer: chestnut bun, black top, blue overalls, one pearl earring per ear
+const FP = { // farmer: chestnut low bun, black top, blue overalls, one pearl earring per ear
   O: '#2a120a', N: '#5e2a14', n: '#8b4a24', h: '#b8682e', H: '#e0955a', s: '#f6c49a', S: '#dc966e', o: '#94503a',
   w: '#ffffff', x: '#2e140c', y: '#7a4022', q: '#f39088', l: '#c0505a', p: '#ffffff', P: '#b9c2d8',
   k: '#1e1b24', K: '#45404f', j: '#0b0a0f', u: '#4169d8', U: '#24398f', V: '#7193f0', b: '#f0c75a',
@@ -66,27 +66,27 @@ const BY_SEASON = {
 const mirror = (r) => [...r].reverse().join('');
 const half = (rows) => rows.map((r) => r + mirror(r));
 const TOP = half([
-  '............OOOO', '..........OOnnhh', '.........OnnhHHh', '.........OnnhhHh',
-  '.........ONnnhhn', '..........ONnnnn', '...........OONNn', '.........OOOnnNN',
+  '................', '................', '................', '................',
+  '................', '................', '................', '.........OOOOOOO',
   '.......OONnnnhhn', '......ONnnnhhHhh', '.....ONnnhhHHhhn', '....ONnnhhhhhnnn',
   '....ONnnhnnnnnnN',
 ]);
 const FRONT = [...TOP, ...half([
   '...ONnnhnnnnNnnn', '...ONnnnnNnnnNnn', '...ONnnNnnsnNnns', '...ONnnNssssnsss',
-  '...ONnnsssssssss', '...ONnsxxxxxssss', '...ONnsswyyxssss', '..ONoSssyyyxssss',
-  '..ONoSssxyyxssss', '..ONoSssqqqsssss', '..ONppoSsssssssl', '..ONpPNoSsssssss',
-  '..ONnNN.ooSSSsss', '..ONnN......ooSs', '..ONnNjjjjjjjkSS', '..ONNjkkkkkkkkkk',
-  '...OjkKkkkkuukkk', '..jkKKkkkkkuukkk', '..jkKkkkjkkuubkk', '..jkkkkjkkkuuuuu',
+  '...ONnnsssssssss', '...ONnsxxxxxssss', '...ONnsswyyxssss', '...OoSssyyyxssss',
+  '...OoSssxyyxssss', '....oSssqqqsssss', '....ppoSsssssssl', '....pP.oSsssssss',
+  '......ONnooSSsss', '......ONnhnnooSs', '......jjONNNjkSS', '...jjjkkkkkkkkkk',
+  '...jjkKkkkkuukkk', '..jkKKkkkkkuukkk', '..jkKkkkjkkuubkk', '..jkkkkjkkkuuuuu',
   '..jjjjjjkkkuVuuu', '...osssokkkuuuuu', '...osssokuuuuuuu', '...osSsoUuuuuuuu',
   '...ossSoUuuuVuuu', '....oooUuuuUUUUu', '.......Uuuuuuuuu', '.......Uuuuuuuuu',
   '.......UuuuuuuuU',
 ])];
 const BACK = [...TOP, ...half([
   '...ONnnhnnnnnnnn', '...ONnnnnnhhnnnn', '...ONnnnnhhnnnnN', '...ONnnnhhnnnnNn',
-  '...ONnnnnnnnnNnn', '...ONnnhnnnnnnnn', '...ONnnhnnnnnnnn', '..ONoSnnnnnnNnnn',
-  '..ONoSnnnhnnnnnn', '..ONnonnnhnnnnnn', '..ONppnnnnnnNnnn', '..ONpPnnnnnnnnnn',
-  '..ONnNnnnnnnnnnn', '..ONnNNnnnnnnnnn', '..ONnNjkONnnnnnn', '..ONNjkkkONNNNNN',
-  '...OjkKkkkkuukkk', '..jkKKkkkkkuukkk', '..jkKkkkjkkkuukk', '..jkkkkjkkkkkuuk',
+  '...ONnnnnnnnnNnn', '...ONnnhnnnnnnnn', '...ONnnhnnnnnnnn', '...OoSnnnnnnNnnn',
+  '...OoSnnnhnnnnnn', '....oSNnnhnnnnnn', '....ppONnnnnnnnn', '....pP..ONNOOOOO',
+  '.........ONnhhHh', '........ONnnhhhn', '......jjONnnnnnn', '...jjjkkkONNNNNN',
+  '...jjkKkkkkuukkk', '..jkKKkkkkkuukkk', '..jkKkkkjkkkuukk', '..jkkkkjkkkkkuuk',
   '..jjjjjjkkkkkkuu', '...osssokkkkkkku', '...osssokuuuuuuu', '...osSsoUuuuuuuu',
   '...ossSoUuuuVuuu', '....oooUuuuUUUUu', '.......Uuuuuuuuu', '.......Uuuuuuuuu',
   '.......UuuuuuuuU',
