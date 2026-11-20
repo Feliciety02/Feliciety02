@@ -17,9 +17,11 @@ const CP = { // crops
   e: '#fff09a', E: '#e2bf35', w: '#ffffff', W: '#d6e4f0', x: '#20160e', q: '#ff8a3d',
   K: '#2d1b10', i: '#c8f0ff', I: '#5aa9e6',
 };
-const FP = { // farmer: chestnut bun, black top, blue overalls, pearl earrings
-  N: '#3e1a0e', n: '#8b4a24', h: '#c07a40', s: '#f2b48a', S: '#d48a66', x: '#3a1e14', q: '#f59a8a',
-  p: '#ffffff', e: '#ffffff', k: '#1c1a22', K: '#3c3848', u: '#3f63d0', U: '#22348a', f: '#5a2c18', m: '#c7d2d9', M: '#7d8b95',
+const FP = { // farmer: chestnut bun, black top, blue overalls, one pearl earring per ear
+  O: '#2a120a', N: '#5e2a14', n: '#8b4a24', h: '#b8682e', H: '#e0955a', s: '#f6c49a', S: '#dc966e', o: '#94503a',
+  w: '#ffffff', x: '#2e140c', y: '#7a4022', q: '#f39088', l: '#c0505a', p: '#ffffff', P: '#b9c2d8',
+  k: '#1e1b24', K: '#45404f', j: '#0b0a0f', u: '#4169d8', U: '#24398f', V: '#7193f0', b: '#f0c75a',
+  f: '#7a3e1c', F: '#3e1c0c', m: '#c7d2d9', M: '#7d8b95',
 };
 
 const SEASON = {
@@ -60,22 +62,40 @@ const BY_SEASON = {
   winter: [[], ['frostSprout'], ['frostYoung'], ['holly'], ['snowman', 'crystal']],
 };
 
-const HEAD = [ // high chestnut bun
-  '......NNNN......', '.....NnhhnN.....', '.....NnnnnN.....', '...NNNNnnNNNN...', '..NnnhhnnnhhnN..', '.NnnhnnnnnnnnnN.',
-  '.NnnnnnnnnnnnnN.',
+// drawn at half-pixel scale (32x48) for more detail; left halves are mirrored
+const mirror = (r) => [...r].reverse().join('');
+const half = (rows) => rows.map((r) => r + mirror(r));
+const TOP = half([
+  '............OOOO', '..........OOnnhh', '.........OnnhHHh', '.........OnnhhHh',
+  '.........ONnnhhn', '..........ONnnnn', '...........OONNn', '.........OOOnnNN',
+  '.......OONnnnhhn', '......ONnnnhhHhh', '.....ONnnhhHHhhn', '....ONnnhhhhhnnn',
+  '....ONnnhnnnnnnN',
+]);
+const FRONT = [...TOP, ...half([
+  '...ONnnhnnnnNnnn', '...ONnnnnNnnnNnn', '...ONnnNnnsnNnns', '...ONnnNssssnsss',
+  '...ONnnsssssssss', '...ONnsxxxxxssss', '...ONnsswyyxssss', '..ONoSssyyyxssss',
+  '..ONoSssxyyxssss', '..ONoSssqqqsssss', '..ONppoSsssssssl', '..ONpPNoSsssssss',
+  '..ONnNN.ooSSSsss', '..ONnN......ooSs', '..ONnNjjjjjjjkSS', '..ONNjkkkkkkkkkk',
+  '...OjkKkkkkuukkk', '..jkKKkkkkkuukkk', '..jkKkkkjkkuubkk', '..jkkkkjkkkuuuuu',
+  '..jjjjjjkkkuVuuu', '...osssokkkuuuuu', '...osssokuuuuuuu', '...osSsoUuuuuuuu',
+  '...ossSoUuuuVuuu', '....oooUuuuUUUUu', '.......Uuuuuuuuu', '.......Uuuuuuuuu',
+  '.......UuuuuuuuU',
+])];
+const BACK = [...TOP, ...half([
+  '...ONnnhnnnnnnnn', '...ONnnnnnhhnnnn', '...ONnnnnhhnnnnN', '...ONnnnhhnnnnNn',
+  '...ONnnnnnnnnNnn', '...ONnnhnnnnnnnn', '...ONnnhnnnnnnnn', '..ONoSnnnnnnNnnn',
+  '..ONoSnnnhnnnnnn', '..ONnonnnhnnnnnn', '..ONppnnnnnnNnnn', '..ONpPnnnnnnnnnn',
+  '..ONnNnnnnnnnnnn', '..ONnNNnnnnnnnnn', '..ONnNjkONnnnnnn', '..ONNjkkkONNNNNN',
+  '...OjkKkkkkuukkk', '..jkKKkkkkkuukkk', '..jkKkkkjkkkuukk', '..jkkkkjkkkkkuuk',
+  '..jjjjjjkkkkkkuu', '...osssokkkkkkku', '...osssokuuuuuuu', '...osSsoUuuuuuuu',
+  '...ossSoUuuuVuuu', '....oooUuuuUUUUu', '.......Uuuuuuuuu', '.......Uuuuuuuuu',
+  '.......UuuuuuuuU',
+])];
+const LEGS_A = [
+  '........UuuuuuU..UuuuuuU........', '........UuuuuuU..UuuuuuU........', '........UUUUUUU..FffffFF........', '........FffffFF..FFFFFFF........',
+  '.......FfffffFFF................', '.......FFFFFFFFF................',
 ];
-const FRONT = [...HEAD, // bangs, pearl earrings, black top under blue overalls
-  '.NnnNnnsnnNnnnN.', '.NnsexssssexsnN.', '.NnsxxssssxxsnN.', '.NpqssssssssqpN.', '.NnssssSSssssnN.', '.Nnn.ssssss.nnN.',
-  '.nNkkkkkkkkkkNn.', '..kKkuUuuUukKk..', '.kkkkuuuuuukkkk.', '.ss.kuuuuuuk.ss.', '.ss.uuuuuuuu.ss.', '....uuuUUuuu....',
-  '....uuuUUuuu....',
-];
-const BACK = [...HEAD,
-  '.NnnnnnnnnnnnnN.', '.NnnhnnnnnnhnnN.', '.NnnnnnnnnnnnnN.', '.NpnnnnnnnnnnpN.', '.NnnnnnnnnnnnnN.', '..NnnnnnnnnnnN..',
-  '.nNkkkkkkkkkkNn.', '..kkkUkkkkUkkk..', '.kkkkuuuuuukkkk.', '.ss.kuuuuuuk.ss.', '.ss.uuuuuuuu.ss.', '....uuuUUuuu....',
-  '....uuuUUuuu....',
-];
-const LEGS_A = ['....uuu..uuu....', '....UUU..fff....', '....fff.........'];
-const LEGS_B = ['....uuu..uuu....', '....fff..UUU....', '.........fff....'];
+const LEGS_B = LEGS_A.map(mirror);
 const CAN = ['......mm', '.mmmmMm.', 'mMMMMm..', 'mMMMMm..', 'mMMMMm..', '.mmmm...'];
 
 const CHICKEN = ['....rr', '...rRr', '...wwww', '..wwxwwW', '.yywwwww', '..wwwwwww..w', '..wwwwwwwwww', '..wWwwwwwwWw', '...wWWWWWWw', '....wwwwww', '.....y..y', '....yy.yy'];
@@ -473,12 +493,12 @@ export function renderFarm({ total, weeks: allWeeks }, { name = "Fe Anne's Farm"
   const farmer = `<g>
     <g class="bob">
       <g>${faceAnim(false)}
-        <g class="fa">${sprite(body(FRONT), FP, 1, -8, -21)}</g>
-        <g class="fb">${sprite([...FRONT, ...LEGS_B], FP, 1, -8, -21)}</g>
+        <g class="fa">${sprite(body(FRONT), FP, 0.5, -8, -22)}</g>
+        <g class="fb">${sprite([...FRONT, ...LEGS_B], FP, 0.5, -8, -22)}</g>
       </g>
       <g opacity="0">${faceAnim(true)}
-        <g class="fa">${sprite(body(BACK), FP, 1, -8, -21)}</g>
-        <g class="fb">${sprite([...BACK, ...LEGS_B], FP, 1, -8, -21)}</g>
+        <g class="fa">${sprite(body(BACK), FP, 0.5, -8, -22)}</g>
+        <g class="fb">${sprite([...BACK, ...LEGS_B], FP, 0.5, -8, -22)}</g>
       </g>
       ${sprite(CAN, FP, 1, 5, -8)}
       <rect class="dr" x="12" y="-7" width="1" height="2" fill="#7cc7ff"/>
@@ -570,4 +590,4 @@ ${defs}${style}
 </svg>`;
 }
 
-export { CROPS, CP, FRONT, FP, ICONS, HEAD };
+export { CROPS, CP, FRONT, FP, ICONS };
