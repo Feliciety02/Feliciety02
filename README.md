@@ -3,18 +3,20 @@
 
 <picture><img src="assets/farm.svg" width="100%" alt="Fe Anne's Farm: my last six months of GitHub contributions as a pixel farm. Busier days grow bigger crops while I water the field from morning to night: a pixel me with a chestnut low bun, black top, blue overalls and a pearl earring on each ear." /></picture>
 
-<picture><img src="assets/dialogue.svg" width="100%" alt="Hi there! I'm Fe Anne  Computer Science Student | University of MindanaoUI/UX Designer &amp; Web DeveloperBuilding user-centered digital solutions Now tending: Thesis Tracker Mobile" /></picture>
+<sub>👩‍🌾 That's me in the field: chestnut low bun, black top, blue overalls and a pearl earring on each ear, watering every day's crop.</sub>
 
-<picture><img src="assets/backpack.svg" width="100%" alt="Inventory: TypeScript, Python, JavaScript, HTML, Vue, Jupyter, Dart, PHP, Figma" /></picture>
+<picture><img src="assets/dialogue.svg" width="100%" alt="Hi there! I'm Fe Anne  Computer Science Student | University of MindanaoUI/UX Designer &amp; Web DeveloperBuilding user-centered digital solutions Now tending: Pawtype Typing Adventure" /></picture>
+
+<picture><img src="assets/backpack.svg" width="100%" alt="Inventory: TypeScript, Python, JavaScript, HTML, Jupyter, Dart, PHP, Figma" /></picture>
 
 <picture><img src="assets/banner-quests.svg" width="100%" alt="Quest Log" /></picture>
 
-<a href="https://github.com/Feliciety02/Thesis-Tracker-Mobile"><img src="assets/quests/1.svg" width="100%" alt="Thesis-Tracker-Mobile: Offline-first Android and PWA fieldwork tracker for a banana leaf disease thesis: five-view sample photos, team tasks, panel revisions, and expense receipts, synced to Google Sheets and Drive through Capacitor and Apps Script." /></a>
-<a href="https://github.com/Feliciety02/START-Davao-Chapter"><img src="assets/quests/2.svg" width="100%" alt="START-Davao-Chapter: Installable PWA portal for DOST-SEI START scholars in Region XI: weekly check-ins, an XP journey, and Campus Lead and Regional Representative dashboards, powered by Google Sheets and Apps Script on GitHub Pages." /></a>
-<a href="https://github.com/Feliciety02/UMunity-Organization-Management-System-V.2"><img src="assets/quests/3.svg" width="100%" alt="UMunity-Organization-Management-System-V.2: UMunity v2: one platform for every University of Mindanao student organization, with admin, leader, and student roles. Built on TanStack Start, React Query, and a Turso (libSQL) database." /></a>
-<a href="https://github.com/Feliciety02/AIVERA-pro"><img src="assets/quests/4.svg" width="100%" alt="AIVERA-pro: Intelligent web security assessment and vulnerability management platform with role-based workflows for authorized scoping, scanning, evidence review, remediation tracking, and PDF reporting. Built with React 19, Express, Prisma, and SQLite, with optional Gemini AI assistance." /></a>
-<a href="https://github.com/Feliciety02/AIVERA-lite"><img src="assets/quests/5.svg" width="100%" alt="AIVERA-lite: Lightweight AI-assisted website security assessment app: define an authorized scope, run careful checks, verify each finding, and export a printable report. Built with React, Express, and SQLite, with optional local AI." /></a>
-<a href="https://github.com/Feliciety02/UM-Survey-Filler-Extension"><img src="assets/quests/6.svg" width="100%" alt="UM-Survey-Filler-Extension: Local-only Chrome and Edge extension that fills and submits supported UM-PASS surveys and evaluations across all three feedback sections, with context-aware college and venue matching. Manifest V3, vanilla JavaScript." /></a>
+<a href="https://github.com/Feliciety02/Pawtype-Typing-Adventure"><img src="assets/quests/1.svg" width="100%" alt="Pawtype-Typing-Adventure: Cozy pixel-art typing tutor with a typing arena, world themes, an unlockable adventure map, and a cat mascot. Built with TanStack Start, React 19, and Tailwind CSS 4, with Supabase sign-in and cloud save." /></a>
+<a href="https://github.com/Feliciety02/UMunity-SchoolOrg-Management-System"><img src="assets/quests/2.svg" width="100%" alt="UMunity-SchoolOrg-Management-System: UMunity v2: one platform for every University of Mindanao student organization, with admin, leader, and student roles. Built on TanStack Start, React Query, and a Turso (libSQL) database." /></a>
+<a href="https://github.com/Feliciety02/Thesis-Tracker-Mobile"><img src="assets/quests/3.svg" width="100%" alt="Thesis-Tracker-Mobile: Offline-first Android and PWA fieldwork tracker for a banana leaf disease thesis: five-view sample photos, team tasks, panel revisions, and expense receipts, synced to Google Sheets and Drive through Capacitor and Apps Script." /></a>
+<a href="https://github.com/Feliciety02/START-Davao-Chapter"><img src="assets/quests/4.svg" width="100%" alt="START-Davao-Chapter: Installable PWA portal for DOST-SEI START scholars in Region XI: weekly check-ins, an XP journey, and Campus Lead and Regional Representative dashboards, powered by Google Sheets and Apps Script on GitHub Pages." /></a>
+<a href="https://github.com/Feliciety02/AIVERA-pro"><img src="assets/quests/5.svg" width="100%" alt="AIVERA-pro: Intelligent web security assessment and vulnerability management platform with role-based workflows for authorized scoping, scanning, evidence review, remediation tracking, and PDF reporting. Built with React 19, Express, Prisma, and SQLite, with optional Gemini AI assistance." /></a>
+<a href="https://github.com/Feliciety02/AIVERA-lite"><img src="assets/quests/6.svg" width="100%" alt="AIVERA-lite: Lightweight AI-assisted website security assessment app: define an authorized scope, run careful checks, verify each finding, and export a printable report. Built with React, Express, and SQLite, with optional local AI." /></a>
 
 <picture><img src="assets/banner-mail.svg" width="100%" alt="Mailbox" /></picture>
 
@@ -26,5 +28,7 @@
 <br/><br/>
 
 <picture><img src="https://komarev.com/ghpvc/?username=Feliciety02&label=Farm%20visitors&color=c48a4f&style=flat-square" alt="Farm visitors" /></picture>
+
+<sub>🌱 This farm regrows every 6 hours from my GitHub profile</sub>
 
 </div>
