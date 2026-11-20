@@ -12,6 +12,19 @@ My profile README is **generated** — every picture on it is an animated SVG dr
 | 📜 Quest log | `scripts/cards.mjs` → `renderQuest` | Pinned repos (or `quests` in the config) |
 | 📮 Mailbox | `scripts/cards.mjs` → `renderMail` | Social links + website from my profile |
 
+
+## 👩‍🌾 The farmer
+
+The little farmer walking the rows is a pixel version of me, drawn in `scripts/farm.mjs` (`FP` palette, `TOP`, `FRONT`, `BACK`, `LEGS_A`, `LEGS_B`):
+
+- **Hair:** chestnut-brown high bun with wispy bangs, falling to the shoulders
+- **Face:** brown eyes with a white shine, pink blush
+- **Earrings:** one white pearl on each ear, visible from the front and the back
+- **Outfit:** black short-sleeved top under blue overalls with gold buttons and a pocket, and brown boots
+- **Watering can:** she waters each day's plot as she walks
+
+She is drawn at half-pixel scale (32×48) so she has more detail than the crops, but takes the same space on the field. Only the left half of each row is written out; it is mirrored to make the right half. Two leg frames swap to make her walk, and she turns around (`BACK`) on the way back along a row.
+
 ## 🎨 How the art is drawn
 
 - **Pixel sprites as text grids** — every sprite is a list of strings where each character is a colour, turned into SVG by `sprite()` in `scripts/pixel.mjs` (one `<path>` per colour keeps files tiny).
