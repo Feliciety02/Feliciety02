@@ -3,6 +3,8 @@
 
 <picture><img src="assets/farm.svg" width="100%" alt="Fe Anne's Farm: my last six months of GitHub contributions as a pixel farm. Busier days grow bigger crops while I water the field from morning to night: a pixel me with a chestnut low bun, black top, blue overalls and a pearl earring on each ear." /></picture>
 
+<sub>👩‍🌾 That's me in the field: chestnut low bun, black top, blue overalls and a pearl earring on each ear, watering every day's crop.</sub>
+
 <picture><img src="assets/dialogue.svg" width="100%" alt="Hi there! I'm Fe Anne  Computer Science Student | University of MindanaoUI/UX Designer &amp; Web DeveloperBuilding user-centered digital solutions Now tending: Pawtype Typing Adventure" /></picture>
 
 <picture><img src="assets/backpack.svg" width="100%" alt="Inventory: TypeScript, Python, JavaScript, HTML, Jupyter, Dart, PHP, Figma" /></picture>
@@ -26,5 +28,7 @@
 <br/><br/>
 
 <picture><img src="https://komarev.com/ghpvc/?username=Feliciety02&label=Farm%20visitors&color=c48a4f&style=flat-square" alt="Farm visitors" /></picture>
+
+<sub>🌱 This farm regrows every 6 hours from my GitHub profile</sub>
 
 </div>
