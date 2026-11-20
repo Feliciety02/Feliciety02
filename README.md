@@ -27,6 +27,4 @@
 
 <picture><img src="https://komarev.com/ghpvc/?username=Feliciety02&label=Farm%20visitors&color=c48a4f&style=flat-square" alt="Farm visitors" /></picture>
 
-<sub>🌱 This farm regrows every 6 hours from my GitHub profile</sub>
-
 </div>
