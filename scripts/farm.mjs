@@ -105,21 +105,21 @@ const SIDE = [
   '....ONnnhnnnnnnnnnnnnnnnnO......', '....ONnhnnnnnnnnnnNnnnNnnO......', '....ONnnnnnhnnnnnNnnnsNnnnO.....',
   '....ONnnnnhnnnnnNnsssssNsnO.....', '....ONnnnnnnnnnnNssssssssso.....', '....ONnnnhnnnnnnNsssxxxxsso.....',
   '....ONnnnnnnnoSSsssswyyxsso.....', '....ONnnnnnnnoSSssssyyyxsso.....', '....ONnnnnnnnoSSssssxyyxsso.....',
-  '....ONnnnnnnnnoSsssqqqssso......', '.....ONnnnnnnNppsssssslso.......', '......ONnnnnN.pPSSssssso........',
-  '....ONnhhHnnN...ooSSSo..........', '....ONnnhhnnN.....oSSo..........', '.....ONnnnnN..jjjjkSSkjj........',
-  '......ONNjjjkkkkkkkkkkkkj.......', '.........jkkKKkkkkkkkuuuj.......', '.........jkKKKKkkkkkkuuuj.......',
+  '....ONnnnnnnnnoSsssqqqssso......', '.....ONnnnnnnNppsssssslso.......', '......ONnnnnNNpPSSssssso........',
+  '....ONnhhHnnnnnNooSSSSo.........', '....ONnnhhnnnnnnNoSSSSo.........', '.....ONnnnnnnnnNjkSSSSkjj.......',
+  '.....ONNnnnnNkkkkkkkkkkkj.......', '.........jkkKKkkkkkkkuuuj.......', '.........jkKKKKkkkkkkuuuj.......',
   '.........jkKKKKkkkkkuuuuj.......', '.........jkkKKkkkkkuuuuuj.......', '.........jjjjjjjkkkuubuuj.......',
   '.........UUossoUuuuuuuuuU.......', '.........UUossoUuuuuuuuuU.......', '.........UuosSoUuuuuVuuuU.......',
   '.........UuoSsoUuuuuuuuuU.......', '.........UuuoooUuuuuuuuuU.......', '.........UuuuuuuuuuuuuuuU.......',
   '.........UuuuuuuuuuuuuuuU.......', '.........UuuuuuuuuuuuuuuU.......', '.........UUuuuuuuuuuuuUUU.......',
 ];
 const SIDE_A = [
-  '.........UuuuuuU..UuuuuuU.......', '........UuuuuuU....UuuuuuU......', '........UUUUUUU....UUUUUUU......',
-  '.......FfffffF.....FfffffF......', '.......FffffffF....FfffffffF....', '.......FFFFFFFF....FFFFFFFFF....',
+  '........UuuuuuuU..UuuuuuuU......', '.......UuuuuuuU....UuuuuuuU.....', '.......UUUUUUUU....UUUUUUUU.....',
+  '......FffffffF.....FffffffF.....', '......FfffffffF....FffffffffF...', '......FFFFFFFFF....FFFFFFFFFF...',
 ];
 const SIDE_B = [
-  '...........UuuuuuuuuU...........', '...........UuuuuuuuuU...........', '...........UUUUUUUUUU...........',
-  '...........FffffffffF...........', '...........FfffffffffFF.........', '...........FFFFFFFFFFFF.........',
+  '...........UuuuuuuuuuU..........', '...........UuuuuuuuuuU..........', '...........UUUUUUUUUUU..........',
+  '...........FfffffffffF..........', '...........FffffffffffFF........', '...........FFFFFFFFFFFFF........',
 ];
 const CAN = ['......mm', '.mmmmMm.', 'mMMMMm..', 'mMMMMm..', 'mMMMMm..', '.mmmm...'];
 
