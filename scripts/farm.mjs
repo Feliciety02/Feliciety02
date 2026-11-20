@@ -527,9 +527,9 @@ export function renderFarm({ total, weeks: allWeeks }, { name = "Fe Anne's Farm"
   // critters
   const chY = laneY + 12;
   const critters = `
-    <g transform="translate(${X0 + 220} ${chY + 16 - 40})"><g class="ck"><g class="cf">${sprite(CHICKEN, HEN_PAL, 2)}</g></g></g>
-    <g transform="translate(${X0 + 180} ${chY + 16 - 20})"><g class="ck" style="animation-delay:.6s"><g class="cf" style="animation-delay:.6s">${sprite(CHICK, CHICK_PAL, 2)}</g></g></g>
-    <g transform="translate(${X0 + 600} ${chY + 16 - 32})">${sprite(CAT, CAT_PAL, 2)}<g class="zz">${text('z', 22, -4, 2, '#ffffff')}</g></g>`;
+    <g transform="translate(${X0 + 220} ${chY + 16 - 30})"><g class="ck"><g class="cf">${sprite(CHICKEN, HEN_PAL, 1.5)}</g></g></g>
+    <g transform="translate(${X0 + 190} ${chY + 16 - 15})"><g class="ck" style="animation-delay:.6s"><g class="cf" style="animation-delay:.6s">${sprite(CHICK, CHICK_PAL, 1.5)}</g></g></g>
+    <g transform="translate(${X0 + 600} ${chY + 16 - 24})">${sprite(CAT, CAT_PAL, 1.5)}<g class="zz">${text('z', 16, -4, 1, '#ffffff')}</g></g>`;
   const butterflies = [[0, '#ffb3d1'], [-11, '#9ad0ff'], [-6, '#fff27a']].map(([b, c]) =>
     `<g><g class="bf">${sprite(BUTTERFLY, { p: c, P: '#ffffff', k: '#2d1b10' }, 1, -2, -2)}</g><animateMotion dur="28s" begin="${b}s" repeatCount="indefinite" path="M${X0} ${Y0 + 20} C ${W * 0.3} ${Y0 - 50}, ${W * 0.5} ${Y0 + 120}, ${W - 40} ${Y0 + 10} S ${W * 0.3} ${Y0 + 110}, ${X0} ${Y0 + 20}"/></g>`).join('');
   const rf = rng(3);
