@@ -15,7 +15,7 @@ My profile README is **generated** — every picture on it is an animated SVG dr
 
 ## 👩‍🌾 The farmer
 
-The little farmer walking the rows is a pixel version of me, drawn in `scripts/farm.mjs` (`FP` palette, `TOP`, `FRONT`, `BACK`, `LEGS_A`, `LEGS_B`):
+The little farmer walking the rows is a pixel version of me, drawn in `scripts/farm.mjs` (`FP` palette, `TOP`, `FRONT`, `BACK`, `SIDE`, `LEGS_A`, `LEGS_B`, `SIDE_A`, `SIDE_B`):
 
 - **Hair:** chestnut-brown hair in a low bun at the nape, with wispy bangs
 - **Face:** brown eyes with a white shine, pink blush
@@ -23,7 +23,7 @@ The little farmer walking the rows is a pixel version of me, drawn in `scripts/f
 - **Outfit:** black short-sleeved top under blue overalls with gold buttons and a pocket, and brown boots
 - **Watering can:** she waters each day's plot as she walks
 
-She is drawn at half-pixel scale (32×48) so she has more detail than the crops, but takes the same space on the field. Only the left half of each row is written out; it is mirrored to make the right half. Two leg frames swap to make her walk, and she turns around (`BACK`) on the way back along a row.
+She is drawn at half-pixel scale (32×48) so she has more detail than the crops, but takes the same space on the field. Only the left half of each row is written out; it is mirrored to make the right half. Two leg frames swap to make her walk, and she turns to face the way she is going: `FRONT` walking down a row, `BACK` walking up, and the `SIDE` view (mirrored for left) when she steps to the next row or heads home along the lane. Her watering can switches hands with her.
 
 ## 🎨 How the art is drawn
 

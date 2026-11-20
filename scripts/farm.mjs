@@ -96,6 +96,31 @@ const LEGS_A = [
   '.......FfffffFFF................', '.......FFFFFFFFF................',
 ];
 const LEGS_B = LEGS_A.map(mirror);
+// side view facing right (the left view is its mirror), low bun at the back of the head
+const SIDE = [
+  '................................', '................................', '................................',
+  '................................', '................................', '................................',
+  '................................', '.........OOOOOOOOOOO............', '.......OOONnnnhhnnnnOOO.........',
+  '......ONnnnhhHhhnnnnnnnO........', '.....ONnnhhHHhhnnnnnnnnnO.......', '....ONnnhhhhhnnnnnnnnnnnO.......',
+  '....ONnnhnnnnnnnnnnnnnnnnO......', '....ONnhnnnnnnnnnnNnnnNnnO......', '....ONnnnnnhnnnnnNnnnsNnnnO.....',
+  '....ONnnnnhnnnnnNnsssssNsnO.....', '....ONnnnnnnnnnnNssssssssso.....', '....ONnnnhnnnnnnNsssxxxxsso.....',
+  '....ONnnnnnnnoSSsssswyyxsso.....', '....ONnnnnnnnoSSssssyyyxsso.....', '....ONnnnnnnnoSSssssxyyxsso.....',
+  '....ONnnnnnnnnoSsssqqqssso......', '.....ONnnnnnnNppsssssslso.......', '......ONnnnnN.pPSSssssso........',
+  '....ONnhhHnnN...ooSSSo..........', '....ONnnhhnnN.....oSSo..........', '.....ONnnnnN..jjjjkSSkjj........',
+  '......ONNjjjkkkkkkkkkkkkj.......', '.........jkkKKkkkkkkkuuuj.......', '.........jkKKKKkkkkkkuuuj.......',
+  '.........jkKKKKkkkkkuuuuj.......', '.........jkkKKkkkkkuuuuuj.......', '.........jjjjjjjkkkuubuuj.......',
+  '.........UUossoUuuuuuuuuU.......', '.........UUossoUuuuuuuuuU.......', '.........UuosSoUuuuuVuuuU.......',
+  '.........UuoSsoUuuuuuuuuU.......', '.........UuuoooUuuuuuuuuU.......', '.........UuuuuuuuuuuuuuuU.......',
+  '.........UuuuuuuuuuuuuuuU.......', '.........UuuuuuuuuuuuuuuU.......', '.........UUuuuuuuuuuuuUUU.......',
+];
+const SIDE_A = [
+  '.........UuuuuuU..UuuuuuU.......', '........UuuuuuU....UuuuuuU......', '........UUUUUUU....UUUUUUU......',
+  '.......FfffffF.....FfffffF......', '.......FffffffF....FfffffffF....', '.......FFFFFFFF....FFFFFFFFF....',
+];
+const SIDE_B = [
+  '...........UuuuuuuuuU...........', '...........UuuuuuuuuU...........', '...........UUUUUUUUUU...........',
+  '...........FffffffffF...........', '...........FfffffffffFF.........', '...........FFFFFFFFFFFF.........',
+];
 const CAN = ['......mm', '.mmmmMm.', 'mMMMMm..', 'mMMMMm..', 'mMMMMm..', '.mmmm...'];
 
 const CHICKEN = ['....rr', '...rRr', '...wwww', '..wwxwwW', '.yywwwww', '..wwwwwww..w', '..wwwwwwwwww', '..wWwwwwwwWw', '...wWWWWWWw', '....wwwwww', '.....y..y', '....yy.yy'];
@@ -329,11 +354,16 @@ export function renderFarm({ total, weeks: allWeeks }, { name = "Fe Anne's Farm"
   const T = +((len * FS) / 120).toFixed(2);
   const pathD = 'M' + route.map(([x, y]) => `${x} ${y}`).join('L');
 
-  // facing: front when walking down / home, back when walking up
-  const faceKT = ['0'], faceV = ['1'];
-  for (let c = 1; c < cols; c++) { faceKT.push((at[c * 7] / len).toFixed(5)); faceV.push(c % 2 === 0 ? '1' : '0'); }
-  faceKT.push((at[pts.length - 1] / len).toFixed(5)); faceV.push('1');
-  const faceAnim = (inv) => `<animate attributeName="opacity" dur="${T}s" repeatCount="indefinite" calcMode="discrete" keyTimes="${faceKT.join(';')}" values="${(inv ? faceV.map((v) => (v === '1' ? '0' : '1')) : faceV).join(';')}"/>`;
+  // facing follows the walk: front going down, back going up, side views going left/right
+  const segs = [];
+  for (let i = 1; i < route.length; i++) {
+    const dx = route[i][0] - route[i - 1][0], dy = route[i][1] - route[i - 1][1];
+    if (!dx && !dy) continue;
+    const d = dx > 0 ? 'R' : dx < 0 ? 'L' : dy > 0 ? 'F' : 'B';
+    if (!segs.length || segs.at(-1)[1] !== d) segs.push([at[i - 1] / len, d]);
+  }
+  segs[0][0] = 0;
+  const viewAnim = (show) => `<animate attributeName="opacity" dur="${T}s" repeatCount="indefinite" calcMode="discrete" keyTimes="${segs.map(([t]) => t.toFixed(5)).join(';')}" values="${segs.map(([, d]) => (show.includes(d) ? 1 : 0)).join(';')}"/>`;
 
   // field
   const dayAt = new Map();
@@ -489,21 +519,22 @@ export function renderFarm({ total, weeks: allWeeks }, { name = "Fe Anne's Farm"
   let fireflies = '';
   for (let i = 0; i < 22; i++) fireflies += `<rect x="${Math.floor(rff() * W)}" y="${hy - 20 + Math.floor(rff() * 170)}" width="2" height="2" fill="#fff38a" class="ff" style="animation-delay:${(rff() * 4).toFixed(2)}s"/>`;
 
-  const body = (rows) => [...rows, ...LEGS_A];
-  const farmer = `<g>
-    <g class="bob">
-      <g>${faceAnim(false)}
-        <g class="fa">${sprite(body(FRONT), FP, 0.5, -8, -22)}</g>
-        <g class="fb">${sprite([...FRONT, ...LEGS_B], FP, 0.5, -8, -22)}</g>
-      </g>
-      <g opacity="0">${faceAnim(true)}
-        <g class="fa">${sprite(body(BACK), FP, 0.5, -8, -22)}</g>
-        <g class="fb">${sprite([...BACK, ...LEGS_B], FP, 0.5, -8, -22)}</g>
-      </g>
-      ${sprite(CAN, FP, 1, 5, -8)}
+  const view = (show, top, legA, legB) => `<g opacity="0">${viewAnim(show)}
+        <g class="fa">${sprite([...top, ...legA], FP, 0.5, -8, -22)}</g>
+        <g class="fb">${sprite([...top, ...legB], FP, 0.5, -8, -22)}</g>
+      </g>`;
+  const can = `${sprite(CAN, FP, 1, 5, -8)}
       <rect class="dr" x="12" y="-7" width="1" height="2" fill="#7cc7ff"/>
       <rect class="dr" x="13" y="-6" width="1" height="2" fill="#a8dcff" style="animation-delay:.15s"/>
-      <rect class="dr" x="11" y="-5" width="1" height="2" fill="#7cc7ff" style="animation-delay:.3s"/>
+      <rect class="dr" x="11" y="-5" width="1" height="2" fill="#7cc7ff" style="animation-delay:.3s"/>`;
+  const farmer = `<g>
+    <g class="bob">
+      ${view('F', FRONT, LEGS_A, LEGS_B)}
+      ${view('B', BACK, LEGS_A, LEGS_B)}
+      ${view('R', SIDE, SIDE_A, SIDE_B)}
+      ${view('L', SIDE.map(mirror), SIDE_A.map(mirror), SIDE_B.map(mirror))}
+      <g opacity="0">${viewAnim('FBR')}${can}</g>
+      <g opacity="0" transform="scale(-1 1)">${viewAnim('L')}${can}</g>
     </g>
     <animateMotion dur="${T}s" repeatCount="indefinite" path="${pathD}"/>
   </g>`;
