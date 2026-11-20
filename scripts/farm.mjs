@@ -123,33 +123,9 @@ const SIDE_B = [
 ];
 const CAN = ['......mm', '.mmmmMm.', 'mMMMMm..', 'mMMMMm..', 'mMMMMm..', '.mmmm...'];
 
-const CHICKEN = [
-  '.....rr...............', '....rRrr..............', '...krRRrk.............',
-  '..kwwwwwwk............', '.kwwwxwwwwk...........', 'yywwwwwwwwk.........k.',
-  'Yyywwwwwwwk........kwk', '.kRwwwwwwwk.......kwWk', '..kRwwwwwwwkkkkkkkwwWk',
-  '..kwwwwwwwwwwwwwwwwWWk', '..kwwwwwwWWwwwwwwwWWVk', '..kwwwwwWwwWwwwwwWWVk.',
-  '..kwwwwwwWWWWwwwWWVk..', '...kwwwwwwwwwwwWWVVk..', '...kWwwwwwwwwwWWVVk...',
-  '....kWWWWWWWWWVVVk....', '.....kkkkkkkkkkkk.....', '........Y...Y.........',
-  '........Y...Y.........', '.......YyY.YyY........',
-];
-const CHICK = [
-  '...kkkk.....', '..kyyyyk....', '.kyxyyyyk...', 'ooyyyyyyyk.k',
-  '.kyyyyYyyyky', '.kyyyYYyyyyk', '..kyyyyyyyk.', '...kkkkkkk..',
-  '....o..o....', '...oo.oo....',
-];
-const CAT = [
-  '..............................', '..k......k....................',
-  '.kpk....kpk...................', '.kookkkkook...kkkkkkkkk.......',
-  '..kkooOookkkkkoooOoooOokkk....', '.kooOoOoOookoOoooOoooOoooOk...',
-  'koooooooooookOoooOoooOoooOok..', 'koooooooooookOoooOoooOoooOook.',
-  'kooxxoooxxookOoooOoooOoooOoook', 'kooooopoooookooooooooooooooook',
-  'koolllllllookooooooooooooooook', '.kolllllllokooooooooooooooook.',
-  '..kklllllkkkkkkkkkkkkkkkkllk..', '..kOkkkkkOooOooOooOooOooOkk...',
-  '..kOooOooOooOooOooOooOooOk....', '...kkkkkkkkkkkkkkkkkkkkkk.....',
-];
-const HEN_PAL = { k: '#5a4636', w: '#ffffff', W: '#e2dccf', V: '#b8ad98', x: '#2d1b10', r: '#e8434b', R: '#b8323b', y: '#f3a530', Y: '#c87a1a' };
-const CHICK_PAL = { k: '#a07a20', y: '#ffe066', Y: '#f0c030', o: '#f3a530', x: '#2d1b10' };
-const CAT_PAL = { k: '#4a2c18', o: '#f0a050', O: '#c87830', l: '#ffe0b8', p: '#f59aa0', x: '#5a3010' };
+const CHICKEN = ['....rr', '...rRr', '...wwww', '..wwxwwW', '.yywwwww', '..wwwwwww..w', '..wwwwwwwwww', '..wWwwwwwwWw', '...wWWWWWWw', '....wwwwww', '.....y..y', '....yy.yy'];
+const CHICK = ['.yyy', 'yyxyy', 'oyyyy.y', '.yyyyyy', '..yyyy', '..o.o'];
+const CAT = ['...o.o', '...ooo..ooo', '..ooooooooOoo', '.oOoooooOooooo', '.ooooOoooooooo', '..oooooooooooo', '....oooooooo'];
 const BUTTERFLY = ['pp.pp', 'pPkPp', '.pkp.', 'pp.pp'];
 const FENCE = ['......kk........', '.....kttk.......', '.....kttk.......', 'kkkkkkTTkkkkkkkk', 'tttttttTtttttttt', 'TTTTTkTTkTTTTTTT', '.....ktTk.......', '.....kttk.......', 'kkkkkkTTkkkkkkkk', 'tttttttTtttttttt', 'TTTTTkTTkTTTTTTT', '.....kttk.......', '.....kttk.......', '.....kkkk.......'];
 const FENCE_PAL = { k: '#4a2a14', t: '#d9a565', T: '#a8733d' };
@@ -527,9 +503,9 @@ export function renderFarm({ total, weeks: allWeeks }, { name = "Fe Anne's Farm"
   // critters
   const chY = laneY + 12;
   const critters = `
-    <g transform="translate(${X0 + 220} ${chY + 16 - 30})"><g class="ck"><g class="cf">${sprite(CHICKEN, HEN_PAL, 1.5)}</g></g></g>
-    <g transform="translate(${X0 + 190} ${chY + 16 - 15})"><g class="ck" style="animation-delay:.6s"><g class="cf" style="animation-delay:.6s">${sprite(CHICK, CHICK_PAL, 1.5)}</g></g></g>
-    <g transform="translate(${X0 + 600} ${chY + 16 - 24})">${sprite(CAT, CAT_PAL, 1.5)}<g class="zz">${text('z', 16, -4, 1, '#ffffff')}</g></g>`;
+    <g transform="translate(${X0 + 220} ${chY})"><g class="ck"><g class="cf">${sprite(CHICKEN, { ...CP, r: '#e8434b', R: '#b8323b', y: '#f3a530', W: '#e2dccf' }, 1)}</g></g></g>
+    <g transform="translate(${X0 + 200} ${chY + 6})"><g class="ck" style="animation-delay:.6s"><g class="cf" style="animation-delay:.6s">${sprite(CHICK, { ...CP, y: '#ffe066', o: '#f3a530' }, 1)}</g></g></g>
+    <g transform="translate(${X0 + 620} ${chY + 2})">${sprite(CAT, { o: '#f0a050', O: '#c87830' }, 1)}<g class="zz">${text('z', 14, -8, 1, '#ffffff')}</g></g>`;
   const butterflies = [[0, '#ffb3d1'], [-11, '#9ad0ff'], [-6, '#fff27a']].map(([b, c]) =>
     `<g><g class="bf">${sprite(BUTTERFLY, { p: c, P: '#ffffff', k: '#2d1b10' }, 1, -2, -2)}</g><animateMotion dur="28s" begin="${b}s" repeatCount="indefinite" path="M${X0} ${Y0 + 20} C ${W * 0.3} ${Y0 - 50}, ${W * 0.5} ${Y0 + 120}, ${W - 40} ${Y0 + 10} S ${W * 0.3} ${Y0 + 110}, ${X0} ${Y0 + 20}"/></g>`).join('');
   const rf = rng(3);
